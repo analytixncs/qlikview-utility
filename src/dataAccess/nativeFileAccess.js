@@ -25,9 +25,12 @@ const writeFilePromise = (filename, data) => {
 };
 
 // Files we will access
-const VAR_FILE = "qvvariables.json";
-const QVWNAMES_FILE = "qvwnames.json";
-const SETTINGS_FILE = "settings.json";
+const FILES = {
+  VAR_FILE: "qvvariables.json",
+  GROUP_FILE: "qvgroups.json",
+  QVWNAMES_FILE: "qvwnames.json",
+  SETTINGS_FILE: "settings.json"
+};
 
 /** @memberof NativeFileAccess
  * Can't access the remote.app. feature except from within a function.  Probably after app has loaded.
@@ -57,7 +60,7 @@ const getLocalFile = dataFile => {
  */
 async function readApplicationNames() {
   try {
-    const data = await readFilePromise(getLocalFile(QVWNAMES_FILE));
+    const data = await readFilePromise(getLocalFile(FILES.QVWNAMES_FILE));
     let applicationList = await JSON.parse(data);
     applicationList = _.sortBy(applicationList);
     return applicationList;
@@ -79,8 +82,8 @@ async function readApplicationNames() {
 //---------------------------------------------------
 async function readQVVariables() {
   try {
-    let variables = await readFilePromise(getLocalFile(VAR_FILE));
-    variables = await JSON.parse(variables);
+    let variables = await readFilePromise(getLocalFile(FILES.VAR_FILE));
+    return (variables = await JSON.parse(variables));
   } catch (err) {
     let myError = {
       error: err,
@@ -93,4 +96,30 @@ async function readQVVariables() {
   }
 }
 
-export { readApplicationNames, readQVVariables };
+//------------------------------------------------
+//--Will return the the whole qvvariables.json
+//--file as a javascript object.
+//---------------------------------------------------
+/**
+ * @param {string} [QVFileToRead=undefined] - Should pass in either VAR or GROUP to load the appropriate file
+ * @returns {Array} - array of parsed JSON file
+ */
+async function readQVFile(QVFileToRead = undefined) {
+  if (!QVFileToRead) return;
+  let fileToRead = `${QVFileToRead}_FILE`;
+  try {
+    let results = await readFilePromise(getLocalFile(FILES[fileToRead]));
+    return (results = await JSON.parse(results));
+  } catch (err) {
+    let myError = {
+      error: err,
+      errno: err.errno,
+      code: err.code,
+      message: err.message,
+      path: err.path
+    };
+    throw myError;
+  }
+}
+
+export { readApplicationNames, readQVVariables, readQVFile };

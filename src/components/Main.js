@@ -3,20 +3,23 @@ import { Route } from "react-router-dom";
 import styled from "styled-components";
 
 import Header from "./Header";
-import VarMain from "./VariableEditor/VarMain";
 import GroupMain from "./GroupEditor/GroupMain";
+import SelectApplicationQVW from "./SelectApplicationQVW";
+import EditorContainer from "./EditorContainer";
 
 const AppWrapper = styled.div`
-  margin-top: 50px;
+  background-color: #696969;
+  height: 100vh;
+  border: 1px solid red;
 `;
 
-export default function Main() {
+export default function Main(props) {
+  console.log("in Main", props);
   return (
     <div>
-      <Header />
       <AppWrapper>
-        <Route path="/vareditor" component={VarMain} />
-        <Route path="/groupeditor" component={GroupMain} />
+        <Route exact path="/" component={SelectApplicationQVW} />
+        <Route path="/:selectedQVW" component={EditorContainer} />
       </AppWrapper>
     </div>
   );

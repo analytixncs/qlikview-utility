@@ -8,12 +8,8 @@ const variableEditorReducer = (state = initialState, action) => {
     case types.LOAD_VARIABLES:
       return {
         ...state,
-        variables: action.payload.qvVariables
-      };
-    case types.CLEAR_VARIABLES:
-      return {
-        ...state,
-        variables: []
+        variables: action.payload.qvVariables,
+        currentApplication: action.payload.application
       };
     default:
       return state;

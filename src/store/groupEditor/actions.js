@@ -18,7 +18,4 @@ function loadVariables(application) {
   // };
 }
 
-function clearVariables() {
-  return { type: types.CLEAR_VARIABLES };
-}
-export { loadVariables, clearVariables };
+export { loadVariables };

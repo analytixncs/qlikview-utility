@@ -1,0 +1,1 @@
+export const LOAD_VARIABLES = "LOAD_VARIABLES";

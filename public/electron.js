@@ -22,7 +22,7 @@ function createWindow() {
       nodeIntegration: true, // needed if going to access file system
       backgroundThrottling: false
     },
-    title: "Title of your App" // Make sure to delete title tag in index.html if it exists
+    title: "Analytix Utility" // Make sure to delete title tag in index.html if it exists
   });
   mainWindow.loadURL(
     isDev
