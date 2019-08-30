@@ -4,12 +4,14 @@ import thunk from "redux-thunk";
 import appStateReducer from "./appState";
 import QVWsReducer from "./QVWs";
 import variableEditorReducer from "./variableEditor";
+import groupEditorReducer from "./groupEditor";
 
 export default function configureStore() {
   // combine reducers
   const reducer = combineReducers({
     appState: appStateReducer,
     variableEditor: variableEditorReducer,
+    groupEditor: groupEditorReducer,
     QVWs: QVWsReducer
   });
   // Middleware to only be used in development

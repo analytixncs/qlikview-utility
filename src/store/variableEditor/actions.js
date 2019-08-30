@@ -8,6 +8,10 @@ function loadVariables(application) {
       type: types.LOAD_VARIABLES,
       payload: { qvVariables, application }
     });
+    dispatch({
+      type: types.LOAD_VARIABLES_WORKING,
+      payload: { status: false }
+    });
   };
   // --- OLD PROMISE WAY BELOW ---
   // return dispatch => {
@@ -18,7 +22,14 @@ function loadVariables(application) {
   // };
 }
 
+function setLoadVariablesWorking() {
+  return {
+    type: types.LOAD_VARIABLES_WORKING,
+    payload: { status: true }
+  };
+}
+
 function clearVariables() {
   return { type: types.CLEAR_VARIABLES };
 }
-export { loadVariables, clearVariables };
+export { loadVariables, setLoadVariablesWorking, clearVariables };

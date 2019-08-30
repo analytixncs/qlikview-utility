@@ -1,19 +1,29 @@
 import * as types from "./types";
 
 const initialState = {
-  variables: []
+  groups: [],
+  loading: true
 };
-const variableEditorReducer = (state = initialState, action) => {
+const groupEditorReducer = (state = initialState, action) => {
   switch (action.type) {
-    case types.LOAD_VARIABLES:
+    case types.LOAD_GROUPS:
       return {
         ...state,
-        variables: action.payload.qvVariables,
-        currentApplication: action.payload.application
+        groups: action.payload.qvGroups
+      };
+    case types.LOAD_GROUPS_WORKING:
+      return {
+        ...state,
+        loading: action.payload.status
+      };
+    case types.CLEAR_GROUPS:
+      return {
+        ...state,
+        groups: []
       };
     default:
       return state;
   }
 };
 
-export default variableEditorReducer;
+export default groupEditorReducer;

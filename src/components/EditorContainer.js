@@ -1,27 +1,29 @@
 import React, { useEffect, useState } from "react";
 import { Route } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import styled from "styled-components";
 
-import * as actions from "../store/variableEditor";
+import { useInitializer } from "../hooks/useInitializer";
+
 import EditorSidebar from "./EditorSidebar";
 import EditorMain from "./EditorMain";
+
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
 
 const EditorContainer = props => {
   let selectedQVW = props.match.params.selectedQVW;
   let dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(actions.loadVariables(selectedQVW));
-    return () => dispatch(actions.clearVariables());
-  }, [selectedQVW]);
+  //let loading = useInitializer(selectedQVW);
 
-  console.log("editor main", props);
+  console.log("editor container", props);
   return (
-    <div>
-      Editor Main
-      <button onClick={() => props.history.goBack()}>Back</button>
+    <Wrapper>
       <EditorSidebar />
       <EditorMain />
-    </div>
+    </Wrapper>
   );
 };
 

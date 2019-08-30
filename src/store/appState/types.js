@@ -1,0 +1,2 @@
+export const SET_CURRENT_QVW = "SET_CURRENT_QVW";
+export const SET_CURRENT_EDITOR = "SET_CURRENT_EDITOR";

@@ -1,13 +1,15 @@
-import { getQVVariables } from "../../dataAccess/applicationDataAccess";
+import { getQVGroups } from "../../dataAccess/applicationDataAccess";
 import * as types from "./types";
 
-function loadVariables(application) {
+function loadGroups(application) {
   return async dispatch => {
-    let qvVariables = await getQVVariables(application);
+    let qvGroups = await getQVGroups(application);
     dispatch({
-      type: types.LOAD_VARIABLES,
-      payload: { qvVariables, application }
+      type: types.LOAD_GROUPS,
+      payload: { qvGroups, application }
     });
+    //set working status to false
+    dispatch({ type: types.LOAD_GROUPS_WORKING, payload: false });
   };
   // --- OLD PROMISE WAY BELOW ---
   // return dispatch => {
@@ -18,4 +20,14 @@ function loadVariables(application) {
   // };
 }
 
-export { loadVariables };
+function setLoadGroupsWorking() {
+  return {
+    type: types.LOAD_GROUPS_WORKING,
+    payload: { status: true }
+  };
+}
+function clearGroups() {
+  return { type: types.CLEAR_GROUPS };
+}
+
+export { loadGroups, setLoadGroupsWorking, clearGroups };

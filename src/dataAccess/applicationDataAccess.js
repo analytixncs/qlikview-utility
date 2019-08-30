@@ -22,4 +22,16 @@ async function getQVVariables(application = undefined) {
   return qvVariables;
 }
 
-export { getApplicationNames, getQVVariables };
+/**
+ * @param {string} application - optional.  If passed, filters by application, thus only returns that applications groups.
+ * @returns {Promise<Array.<Object>>} - Returns the groups store in qvGroups.json
+ */
+async function getQVGroups(application = undefined) {
+  let qvGroups = await readQVFile("GROUP");
+  if (application) {
+    qvGroups = qvGroups.filter(qvGroup => qvGroup.application === application);
+  }
+  return qvGroups;
+}
+
+export { getApplicationNames, getQVVariables, getQVGroups };
