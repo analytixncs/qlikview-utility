@@ -10,6 +10,8 @@ const {
 const path = require("path");
 const isDev = require("electron-is-dev");
 
+const { setMainMenu } = require("./menu");
+
 let mainWindow;
 
 function createWindow() {
@@ -29,6 +31,9 @@ function createWindow() {
       ? "http://localhost:3000"
       : `file://${path.join(__dirname, "../build/index.html")}`
   );
+
+  setMainMenu(mainWindow);
+
   mainWindow.on("closed", () => (mainWindow = null));
   // If in development mode, then load the dev tools
   if (isDev) {
@@ -53,6 +58,38 @@ app.on("activate", () => {
     createWindow();
   }
 });
+
+//---------- MENU TEMPLATE ---------------------//
+const menuTemplate = [
+  {
+    label: "File",
+    submenu: [
+      {
+        label: "Settings",
+        click() {
+          mainWindow.webContents.send("route-settings");
+        }
+      },
+      {
+        label: "Quit",
+        accelerator: (() => {
+          if (process.platform === "darwin") {
+            return "Command+Q";
+          } else {
+            return "Ctrl+Q";
+          }
+        })(),
+        click() {
+          app.quit();
+        }
+      }
+    ]
+  }
+];
+
+if (process.platform === "darwin") {
+  menuTemplate.unshift({});
+}
 
 //---------- INSTALL DEV TOOLS ---------------------//
 const installDevTools = () => {

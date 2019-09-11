@@ -1,8 +1,11 @@
 import React from "react";
 import styled from "styled-components";
-
+import { Route } from "react-router-dom";
 import EditorSidebar from "./EditorSidebar";
 import EditorMain from "./EditorMain";
+
+import VariableEditor from "./VariableEditor/VariableMain";
+import GroupEditor from "./GroupEditor/GroupMain";
 
 const Wrapper = styled.div`
   display: flex;
@@ -16,7 +19,8 @@ const EditorContainer = props => {
   return (
     <Wrapper>
       <EditorSidebar />
-      <EditorMain />
+      <Route path="/:selectedQVW/variableeditor" component={VariableEditor} />
+      <Route path="/:selectedQVW/groupeditor" component={GroupEditor} />
     </Wrapper>
   );
 };

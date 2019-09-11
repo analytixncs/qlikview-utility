@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { createSelector } from "reselect";
+import { Tooltip, Button } from "antd";
 import styled from "styled-components";
 
 const Wrapper = styled.div`
@@ -42,6 +43,7 @@ const MyLink = styled(Link)`
     color: white;
   }
 `;
+const NewQVW = styled.div``;
 
 const QVWSelection = createSelector(
   state => state.QVWs,
@@ -63,6 +65,18 @@ function SelectApplicationQVW() {
             );
           })}
       </List>
+      <Tooltip title="Add New">
+        <Button
+          style={{ marginTop: "25px" }}
+          type="primary"
+          shape="round"
+          size="large"
+          icon="plus"
+          onClick={() => alert("Not Yet implemented")}
+        >
+          Add New
+        </Button>
+      </Tooltip>
     </Wrapper>
   );
 }

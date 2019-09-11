@@ -23,10 +23,6 @@ const Editor = styled.a`
 `;
 
 const EditorSidebar = props => {
-  const { variables, loading } = useSelector(state => ({
-    variables: state.variableEditor.variables,
-    loading: state.variableEditor.loading
-  }));
   console.log("var props", props);
   return (
     <Wrapper>
