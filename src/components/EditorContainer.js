@@ -15,7 +15,7 @@ const Wrapper = styled.div`
 const EditorContainer = props => {
   let selectedQVW = props.match.params.selectedQVW;
 
-  console.log("editor container", props);
+  //console.log("editor container", props);
   return (
     <Wrapper>
       <EditorSidebar />
