@@ -34,9 +34,11 @@ export const selectQVWVariables = createSelector(
 export const selectQVWVariablesGrouped = createSelector(
   [selectQVWVariables],
   variables => {
-    console.log("inselector", variables);
-    return variables;
-    //return _.filter(variables, variable => variable.application === props);
+    return variables.reduce((groupedVars, variable) => {
+      let groupName = variable.group;
+      groupedVars[groupName] = [...(groupedVars[groupName] || ""), variable];
+      return groupedVars;
+    }, {});
   }
 );
 

@@ -2,15 +2,15 @@ import React, { useEffect } from "react";
 import { Route } from "react-router-dom";
 import styled from "styled-components";
 
+import { baseColor } from "../styles/standardStyles";
 import SelectApplicationQVW from "./SelectApplicationQVW";
 import EditorContainer from "./EditorContainer";
 import electron from "../electronExports";
 
 const AppWrapper = styled.div`
-  background-color: #8795a1;
-  height: 100vh;
+  background-color: ${baseColor};
   /* needed this to deal with margin issue in SelectApplicationQVW component */
-  border: 1px solid #8795a1;
+  /* border: 1px solid #8795a1; */
 `;
 
 export default function Main(props) {

@@ -8,6 +8,7 @@ import Main from "./components/Main";
 import Settings from "./components/Settings";
 import configureStore from "./store/configureStore";
 import * as qvwActions from "./store/QVWs";
+import GlobalStyles from "./styles/globalStyles";
 
 function App() {
   // configure redux store
@@ -22,6 +23,7 @@ function App() {
           <Route path="/settings" component={Settings} />
           <Route path="/" component={Main} />
         </Switch>
+        <GlobalStyles />
       </Router>
     </Provider>
   );

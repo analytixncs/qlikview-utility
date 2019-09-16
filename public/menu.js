@@ -32,13 +32,9 @@ function setMainMenu(mainWindow) {
     template.push({
       label: "Developer",
       submenu: [
-        {
-          label: "Toggle Dev Tools",
-          accelerator: "CommandOrControl+Alt+I",
-          click(item, focusedWindow) {
-            focusedWindow.toggleDevTools();
-          }
-        }
+        { role: "reload" },
+        { role: "forcereload" },
+        { role: "toggledevtools" }
       ]
     });
   }

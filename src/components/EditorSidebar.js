@@ -7,10 +7,14 @@ import { map } from "bluebird-lst";
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  width: 200px;
+  width: 150px;
   border-right: 1px solid black;
   background-color: #f1f5f8;
   height: calc(100vh - 1px);
+  position: fixed;
+  left: 0;
+  height: 100%;
+  z-index: 100;
 `;
 const Editor = styled.a`
   padding: 10px;
@@ -23,10 +27,9 @@ const Editor = styled.a`
 `;
 
 const EditorSidebar = props => {
-  console.log("var props", props);
   return (
     <Wrapper>
-      <button onClick={() => props.history.goBack()}>Back</button>
+      <button onClick={() => props.history.push("/")}>Select QVW</button>
       <Editor
         onClick={() =>
           props.history.push(
