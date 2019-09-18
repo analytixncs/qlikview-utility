@@ -2,7 +2,8 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { withRouter } from "react-router-dom";
 import styled from "styled-components";
-import { map } from "bluebird-lst";
+
+import { selectQVWVariablesGrouped } from "../store/variableEditor";
 
 const Wrapper = styled.div`
   display: flex;
@@ -26,24 +27,21 @@ const Editor = styled.a`
   }
 `;
 
-const EditorSidebar = props => {
+const EditorSidebar = ({ history, location, match }) => {
+  let { selectedQVW } = match.params;
+  // Get variables from store in format { group1: [array of variable object], group2: [...], ...}
+  let groupedVars = useSelector(state =>
+    selectQVWVariablesGrouped(state, selectedQVW)
+  );
+
   return (
     <Wrapper>
-      <button onClick={() => props.history.push("/")}>Select QVW</button>
-      <Editor
-        onClick={() =>
-          props.history.push(
-            `/${props.match.params.selectedQVW}/variableeditor`
-          )
-        }
-      >
+      <button onClick={() => history.push("/")}>Select QVW</button>
+      <Editor onClick={() => history.push(`/${selectedQVW}/variableeditor`)}>
         Variable Editor
       </Editor>
-      <Editor
-        onClick={() =>
-          props.history.push(`/${props.match.params.selectedQVW}/groupeditor`)
-        }
-      >
+      {groupedVars && Object.keys(groupedVars).map(group => <div>{group}</div>)}
+      <Editor onClick={() => history.push(`/${selectedQVW}/groupeditor`)}>
         Group Editor
       </Editor>
     </Wrapper>

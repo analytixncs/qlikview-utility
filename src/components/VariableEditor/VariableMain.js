@@ -12,8 +12,7 @@ import VariableSearch from "./VariableSearch";
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  margin-top: 55px;
-  margin-left: 150px;
+  margin-top: calc(55px + 40px);
 `;
 
 function VariableMain({ history, location, match }) {

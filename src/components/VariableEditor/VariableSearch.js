@@ -8,13 +8,13 @@ const Sticky = styled.div`
   justify-content: space-between;
   background: lightgray;
   height: 55px;
-  border-bottom: 2px solid gray;
   padding: 10px;
   position: fixed;
-  top: 0;
+  top: 40px;
   width: 100%;
   z-index: 100;
-  margin-left: 150px;
+  box-shadow: 0px 2px 5px -2px rgba(0, 0, 0, 0.57);
+  border-bottom: 1px solid #0d47a1;
 `;
 
 const VariableSearch = props => {

@@ -12,7 +12,6 @@ export const selectAllVariables2 = (state, props) => ({
 export const selectQVWVariables = createSelector(
   [selectAllVariables, (_, selectedQVW) => selectedQVW],
   (variables, selectedQVW) => {
-    console.log("inselector", variables, selectedQVW);
     return _.filter(
       variables,
       variable => variable.application === selectedQVW
