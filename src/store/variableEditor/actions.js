@@ -22,6 +22,14 @@ function loadVariables(application) {
   // };
 }
 
+function setSearchTerm(searchTerm) {
+  return { type: types.VAR_SET_SEARCH_TERM, payload: searchTerm };
+}
+
+function setGroupFilter(group) {
+  return { type: types.VAR_SET_GROUP_FILTER, payload: group };
+}
+
 function setLoadVariablesWorking() {
   return {
     type: types.LOAD_VARIABLES_WORKING,
@@ -32,4 +40,10 @@ function setLoadVariablesWorking() {
 function clearVariables() {
   return { type: types.CLEAR_VARIABLES };
 }
-export { loadVariables, setLoadVariablesWorking, clearVariables };
+export {
+  loadVariables,
+  setSearchTerm,
+  setGroupFilter,
+  setLoadVariablesWorking,
+  clearVariables
+};

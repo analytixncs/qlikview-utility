@@ -49,9 +49,10 @@ const QVWSelection = createSelector(
   state => state.QVWs,
   QVWs => QVWs
 );
+
 function SelectApplicationQVW() {
+  const defaultStartApp = "variableeditor"; // Could at some point be a setting so it can be changed
   const QVWs = useSelector(QVWSelection);
-  console.log(QVWs);
   return (
     <Wrapper>
       <H1>Select Application</H1>
@@ -60,7 +61,9 @@ function SelectApplicationQVW() {
           QVWs.map(qvw => {
             return (
               <li key={qvw.id}>
-                <MyLink to={`/${qvw.qvwName}`}>{qvw.qvwName}</MyLink>
+                <MyLink to={`/${qvw.qvwName}/${defaultStartApp}`}>
+                  {qvw.qvwName}
+                </MyLink>
               </li>
             );
           })}

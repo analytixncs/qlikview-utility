@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { withRouter } from "react-router-dom";
 import styled from "styled-components";
 import { Button, Icon } from "antd";
+import { editorHeaderHeight } from "../styles/standardStyles";
 
 import { selectQVWVariablesGrouped } from "../store/variableEditor";
 
@@ -11,7 +12,7 @@ const Wrapper = styled.div`
   position: fixed;
   z-index: 200;
   flex-direction: row;
-  height: 40px;
+  height: ${editorHeaderHeight};
   align-items: center;
   background: #64b5f6;
   padding-left: 10px;
@@ -32,9 +33,7 @@ const Editor = styled.a`
   }
 `;
 const Menu = styled.div`
-  /* display: ${props => (props.isOpen ? "" : "none")}; */
-  display: ${props => (props.isOpen ? setTimeout(() => "none", 300) : "")};
-  /* visibility: ${props => (props.isOpen ? "visible" : "hidden")}; */
+  display: ${props => (props.isOpen ? "" : "none")};
   opacity: ${props => (props.isOpen ? "1" : "0")};
   position: absolute;
   top: 35px;
@@ -43,11 +42,11 @@ const Menu = styled.div`
   width: 150px;
   border-radius: 4px;
   z-index: 1000;
-  transition: all .3s;
-  box-shadow: 0px 6px 5px -2px rgba(0,0,0,0.57);
+  transition: all 0.3s;
+  box-shadow: 0px 6px 5px -2px rgba(0, 0, 0, 0.57);
 `;
 const Title = styled.div`
-  margin-left: 25px;
+  margin: 0 25px;
   font-size: 1.4rem;
   font-weight: bold;
 `;

@@ -11,6 +11,16 @@ const variableEditorReducer = (state = initialState, action) => {
         ...state,
         variables: action.payload.qvVariables
       };
+    case types.VAR_SET_SEARCH_TERM:
+      return {
+        ...state,
+        searchTerm: action.payload
+      };
+    case types.VAR_SET_GROUP_FILTER:
+      return {
+        ...state,
+        groupFilter: action.payload
+      };
     case types.LOAD_VARIABLES_WORKING:
       return {
         ...state,

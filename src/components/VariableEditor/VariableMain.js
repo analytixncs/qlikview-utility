@@ -3,6 +3,11 @@ import _ from "lodash";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 
+import {
+  editorHeaderHeight,
+  variableSearchHeight
+} from "../../styles/standardStyles";
+
 import { selectQVWVariablesGrouped } from "../../store/variableEditor";
 
 import GroupHeader from "./GroupHeader";
@@ -12,7 +17,7 @@ import VariableSearch from "./VariableSearch";
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  margin-top: calc(55px + 40px);
+  margin-top: calc(${variableSearchHeight} + ${editorHeaderHeight});
 `;
 
 function VariableMain({ history, location, match }) {
