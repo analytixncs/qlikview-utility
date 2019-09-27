@@ -103,9 +103,15 @@ async function readQVVariables() {
 /**
  * @param {string} [QVFileToRead=undefined] - Should pass in either VAR or GROUP to load the appropriate file
  * @returns {Array} - array of parsed JSON file
+ *
  */
 async function readQVFile(QVFileToRead = undefined) {
-  if (!QVFileToRead) return;
+  if (!QVFileToRead) {
+    throw new Error(
+      "You must pass either VAR or GROUP to the readQVFile function"
+    );
+  }
+
   let fileToRead = `${QVFileToRead}_FILE`;
   try {
     let results = await readFilePromise(getLocalFile(FILES[fileToRead]));
@@ -122,4 +128,31 @@ async function readQVFile(QVFileToRead = undefined) {
   }
 }
 
-export { readApplicationNames, readQVVariables, readQVFile };
+async function writeQVFile(QVFileToWrite = undefined, data) {
+  if (!QVFileToWrite) {
+    throw new Error(
+      "You must pass either VAR or GROUP to the writeQVFile function"
+    );
+  }
+
+  let fileToWrite = `${QVFileToWrite}_FILE`;
+
+  try {
+    //writeFilePromise returns the filename written on success
+    let results = await writeFilePromise(
+      getLocalFile(FILES[fileToWrite]),
+      JSON.stringify(data)
+    );
+    return results;
+  } catch (err) {
+    let myError = {
+      error: err,
+      errno: err.errno,
+      code: err.code,
+      message: err.message,
+      path: err.path
+    };
+    throw myError;
+  }
+}
+export { readApplicationNames, readQVVariables, readQVFile, writeQVFile };

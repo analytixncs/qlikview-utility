@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { Route } from "react-router-dom";
 
-import EditorSidebar from "./EditorSidebar";
+import VariableStateProvider from "./context/variableStateContext";
 import EditorHeader from "./EditorHeader";
 import VariableMain from "./VariableEditor/VariableMain";
 import GroupEditor from "./GroupEditor/GroupMain";
@@ -18,8 +18,16 @@ const EditorContainer = props => {
   return (
     <Wrapper>
       <EditorHeader />
-      <Route path="/:selectedQVW/variableeditor" component={VariableMain} />
-      <Route path="/:selectedQVW/groupeditor" component={GroupEditor} />
+      {/* <Route path="/:selectedQVW/variableeditor" component={VariableMain} />
+      <Route path="/:selectedQVW/groupeditor" component={GroupEditor} /> */}
+      <Route path="/:selectedQVW/variableeditor">
+        <VariableStateProvider>
+          <VariableMain />
+        </VariableStateProvider>
+      </Route>
+      <Route path="/:selectedQVW/groupeditor">
+        <GroupEditor />
+      </Route>
     </Wrapper>
   );
 };

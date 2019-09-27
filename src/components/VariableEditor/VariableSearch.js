@@ -38,11 +38,19 @@ const Padder = styled.div`
   width: 20px;
 `;
 
-const Stats = styled.div``;
+const Stats = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  font-size: 1rem;
+  font-weight: bold;
+`;
 
 const VariableSearch = props => {
   let dispatch = useDispatch();
   let searchTerm = useSelector(state => state.variableEditor.searchTerm) || "";
+  let groupFilter =
+    useSelector(state => state.variableEditor.groupFilter) || "";
   let qvwGroups = useSelector(state =>
     selectQVWGroups(state, props.selectedQVW)
   );
@@ -68,6 +76,7 @@ const VariableSearch = props => {
           style={{ width: "250px" }}
           onChange={value => dispatch(setGroupFilter(value))}
           allowClear
+          value={groupFilter}
         >
           {qvwGroups.map(group => (
             <Select.Option key={group} value={group}>
@@ -77,8 +86,10 @@ const VariableSearch = props => {
         </Select>
       </div>
       <Padder />
-      <Stats>{variableStats.variableCount} - Variables</Stats>
-      <Stats>{variableStats.groupCount} - Groups</Stats>
+      <Stats>
+        <div>{variableStats.variableCount} - Variables</div>
+        <div>{variableStats.groupCount} - Groups</div>
+      </Stats>
     </Sticky>
   );
 };

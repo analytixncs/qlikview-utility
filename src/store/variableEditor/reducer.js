@@ -31,6 +31,11 @@ const variableEditorReducer = (state = initialState, action) => {
         ...state,
         variables: []
       };
+    case types.VAR_UPDATE:
+      return {
+        ...state,
+        variables: action.payload
+      };
     default:
       return state;
   }

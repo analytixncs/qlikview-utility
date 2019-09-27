@@ -1,5 +1,9 @@
-import { getQVVariables } from "../../dataAccess/applicationDataAccess";
+import {
+  getQVVariables,
+  updateQVVariable
+} from "../../dataAccess/applicationDataAccess";
 import * as types from "./types";
+import { secondsTimeStampNow } from "../../dateHelpers";
 
 function loadVariables(application) {
   return async dispatch => {
@@ -21,7 +25,27 @@ function loadVariables(application) {
   //   });
   // };
 }
-
+/** UPDATE Action Creator ---------------
+ * updateVariable - action creator (thunk) that takes in information on a variable that
+ * has been updated and writes it to disk (async), then dispatches the udpate
+ *
+ * @param {string} id - id of the variable to upate
+ * @param {object} qvVariable - object containing updated variable information
+ */
+function updateVariable(id, qvVariable) {
+  return async dispatch => {
+    // Create Date formated as Unix Seconds timestamp
+    let modifyDate = secondsTimeStampNow();
+    let updatedQVVar = {
+      ...qvVariable,
+      modifyDate,
+      modifyUser: "admin"
+    };
+    // returned variable is new list of ALL variables, makes reducer update easy
+    let newQVVars = await updateQVVariable(id, updatedQVVar);
+    dispatch({ type: types.VAR_UPDATE, payload: newQVVars });
+  };
+}
 function setSearchTerm(searchTerm) {
   return { type: types.VAR_SET_SEARCH_TERM, payload: searchTerm };
 }
@@ -45,5 +69,6 @@ export {
   setSearchTerm,
   setGroupFilter,
   setLoadVariablesWorking,
-  clearVariables
+  clearVariables,
+  updateVariable
 };

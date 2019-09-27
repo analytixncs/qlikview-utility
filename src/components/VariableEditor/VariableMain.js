@@ -1,27 +1,51 @@
-import React from "react";
+import React, { useState } from "react";
 import _ from "lodash";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { useParams } from "react-router-dom";
 import styled from "styled-components";
 
 import {
   editorHeaderHeight,
-  variableSearchHeight
+  variableSearchHeight,
+  variableGroupTopMargin
 } from "../../styles/standardStyles";
 
 import { selectQVWVariablesGrouped } from "../../store/variableEditor";
+import { setGroupFilter } from "../../store/variableEditor";
 
 import GroupHeader from "./GroupHeader";
 import GroupVariables from "./GroupVariables";
 import VariableSearch from "./VariableSearch";
 
-const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-top: calc(${variableSearchHeight} + ${editorHeaderHeight});
+const VarListWrapper = styled.div`
+  margin: calc(
+      ${variableSearchHeight} + ${editorHeaderHeight} +
+        ${variableGroupTopMargin}
+    )
+    25px;
 `;
 
-function VariableMain({ history, location, match }) {
-  let { selectedQVW } = match.params;
+const GroupWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  background-color: #e3f2fd;
+  border: 1px solid gray;
+  border-radius: 10px;
+  margin-top: ${variableGroupTopMargin};
+  padding: 5px 15px 15px 15px;
+  box-shadow: 0px 3px 6px -1px rgba(0, 0, 0, 0.62);
+  &:hover {
+    box-shadow: 0px 3px 6px 2px rgba(0, 0, 0, 0.62);
+  }
+`;
+
+function VariableMain(props) {
+  let { selectedQVW } = useParams();
+  // let [viewingId, setViewingId] = useState();
+  // let [isEditing, setIsEditing] = useState(false);
+  // let [isDirty, setIsDirty] = useState(false);
+
+  let dispatch = useDispatch();
   // Get variables from store in format { group1: [array of variable object], group2: [...], ...}
   let groupedVars = useSelector(state =>
     selectQVWVariablesGrouped(state, selectedQVW)
@@ -29,15 +53,20 @@ function VariableMain({ history, location, match }) {
   return (
     <div>
       <VariableSearch selectedQVW={selectedQVW} />
-
-      {Object.keys(groupedVars).map(group => {
-        return (
-          <Wrapper key={group}>
-            <GroupHeader group={group} />
-            <GroupVariables variables={groupedVars[group]} />
-          </Wrapper>
-        );
-      })}
+      <VarListWrapper>
+        {Object.keys(groupedVars).map(group => {
+          return (
+            <GroupWrapper key={group}>
+              <GroupHeader group={group} />
+              <GroupVariables
+                variables={groupedVars[group]}
+                // viewingId={viewingId}
+                // setViewingId={setViewingId}
+              />
+            </GroupWrapper>
+          );
+        })}
+      </VarListWrapper>
     </div>
   );
 }
