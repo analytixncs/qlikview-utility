@@ -3,12 +3,13 @@ import {
   readQVFile,
   writeQVFile
 } from "./nativeFileAccess";
+import uuidv4 from "uuid/v4";
 import { secondsTimeStampNow } from "../dateHelpers";
 
 /**
  * @returns {Promise<Array.<Object>>} - Returns the application names from the json file
  */
-async function getApplicationNames() {
+async function getQVWNames() {
   let appNames = await readApplicationNames();
   return appNames;
 }
@@ -74,4 +75,39 @@ async function getQVGroups(application = undefined) {
   return qvGroups;
 }
 
-export { getApplicationNames, getQVVariables, getQVGroups, updateQVVariable };
+//=========================================================================
+//= QVWNAME FILE FUNCTIONS
+//=========================================================================
+/**
+ *
+ * @param {string} newQVWName - the new QVW Name to add
+ * @param {array} existingQVWNames - array of object of the existing QVW Names
+ * @returns {object} - return the newQVWNameObj, this will have added the id to it
+ */
+async function saveQVWName(newQVWName, existingQVWNames) {
+  let newQVWNameObj = { id: uuidv4(), qvwName: newQVWName };
+  await writeQVFile("QVWNAMES", [...existingQVWNames, newQVWNameObj]);
+  return newQVWNameObj;
+}
+
+/**
+ *
+ * @param {string} id - id of QVW Name to delete
+ * @param {array} existingQVWNames - array of object of the existing QVW Names
+ * @returns {object} -
+ */
+async function deleteQVWName(QVWNames) {
+  return await writeQVFile("QVWNAMES", QVWNames);
+}
+
+//=========================================================================
+//= EXPORT FUNCTIONS
+//=========================================================================
+export {
+  getQVWNames,
+  getQVVariables,
+  getQVGroups,
+  updateQVVariable,
+  saveQVWName,
+  deleteQVWName
+};

@@ -92,7 +92,11 @@ const EditorHeader = ({ history, location, match }) => {
       />
 
       <Title>{`${selectedQVW} ${activeEditor}`}</Title>
-      <Button>Add New</Button>
+      <Button
+        onClick={() => history.push(`/${selectedQVW}/variableeditor/addnew`)}
+      >
+        Add New
+      </Button>
     </Wrapper>
   );
 };

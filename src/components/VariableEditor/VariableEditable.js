@@ -129,7 +129,7 @@ function VariableEditable({ variable }) {
       <Field>
         <Label> Description: </Label>
         <Input.TextArea
-          rows={Math.ceil(newDescription.length / 80)}
+          rows={Math.ceil(newDescription.length / 80) || 2}
           value={newDescription}
           onChange={e => setNewDescription(e.target.value)}
         />
@@ -137,7 +137,7 @@ function VariableEditable({ variable }) {
       <Field>
         <Label>Expression:</Label>
         <Input.TextArea
-          rows={Math.ceil(newExpression.length / 80)}
+          rows={Math.ceil(newExpression.length / 80) || 2}
           style={{ fontFamily: `"Fira Code", monospace` }}
           value={newExpression}
           onChange={e => setNewExpression(e.target.value)}
@@ -146,7 +146,7 @@ function VariableEditable({ variable }) {
       <Field>
         <Label>Notes: </Label>
         <Input.TextArea
-          rows={Math.ceil(newNotes.length / 80)}
+          rows={Math.ceil(newNotes.length / 80) || 2}
           value={newNotes}
           onChange={e => setNewNotes(e.target.value)}
         />

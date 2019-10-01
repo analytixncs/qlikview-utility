@@ -41,7 +41,7 @@ const APPNAMES_FILE = "appnames.json";
 //--will return an array containing a unique list
 //-- of applications contained in the qvvariables.json file
 //---------------------------------------------------
-const getApplicationNames = () => {
+const getQVWNames = () => {
   return readFilePromise(getLocalFile(VAR_FILE)).then(data => {
     let qvVars = JSON.parse(data);
     let applicationList = _.uniq(qvVars.map(varObj => varObj.application));

@@ -13,9 +13,9 @@ function loadGroups(application) {
   };
   // --- OLD PROMISE WAY BELOW ---
   // return dispatch => {
-  //   let request = getApplicationNames();
+  //   let request = getQVWNames();
   //   request.then(applicationNames => {
-  //     dispatch({ type: LOAD_APPLICATION_NAMES, applicationNames });
+  //     dispatch({ type: LOAD_QVW_NAMES, applicationNames });
   //   });
   // };
 }

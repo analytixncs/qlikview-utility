@@ -36,6 +36,7 @@
     "electron-builder": "^21.2.0",
     "electron-devtools-installer": "^2.2.4",
     "jsdoc": "^3.6.3",
+    "react-hook-form": "^3.23.16",
     "react-redux": "^7.1.0",
     "react-router-dom": "^5.1",
     "redux": "^4.0.4",

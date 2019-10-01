@@ -1,10 +1,11 @@
 import React from "react";
 import styled from "styled-components";
-import { Route } from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 
 import VariableStateProvider from "./context/variableStateContext";
 import EditorHeader from "./EditorHeader";
 import VariableMain from "./VariableEditor/VariableMain";
+import VariableAddNew from "./VariableEditor/VariableAddNew";
 import GroupEditor from "./GroupEditor/GroupMain";
 
 const Wrapper = styled.div`
@@ -18,16 +19,19 @@ const EditorContainer = props => {
   return (
     <Wrapper>
       <EditorHeader />
-      {/* <Route path="/:selectedQVW/variableeditor" component={VariableMain} />
-      <Route path="/:selectedQVW/groupeditor" component={GroupEditor} /> */}
-      <Route path="/:selectedQVW/variableeditor">
-        <VariableStateProvider>
-          <VariableMain />
-        </VariableStateProvider>
-      </Route>
-      <Route path="/:selectedQVW/groupeditor">
-        <GroupEditor />
-      </Route>
+      <Switch>
+        <Route path="/:selectedQVW/variableeditor/addnew">
+          <VariableAddNew />
+        </Route>
+        <Route path="/:selectedQVW/variableeditor">
+          <VariableStateProvider>
+            <VariableMain />
+          </VariableStateProvider>
+        </Route>
+        <Route path="/:selectedQVW/groupeditor">
+          <GroupEditor />
+        </Route>
+      </Switch>
     </Wrapper>
   );
 };

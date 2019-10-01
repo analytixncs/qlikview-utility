@@ -1,9 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { createSelector } from "reselect";
-import { Tooltip, Button } from "antd";
+import { Tooltip, Button, Modal, Input } from "antd";
 import styled from "styled-components";
+import { addQVWName, removeQVWName } from "../store/QVWs";
 
 const Wrapper = styled.div`
   display: flex;
@@ -30,6 +31,12 @@ const List = styled.ul`
   margin: 0;
   padding: 0;
 `;
+
+const QVWListItem = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
 const MyLink = styled(Link)`
   display: block;
   border: 1px solid black;
@@ -43,7 +50,9 @@ const MyLink = styled(Link)`
     color: white;
   }
 `;
-const NewQVW = styled.div``;
+const DeleteButton = styled(Button)`
+  height: 40px;
+`;
 
 const QVWSelection = createSelector(
   state => state.QVWs,
@@ -51,8 +60,23 @@ const QVWSelection = createSelector(
 );
 
 function SelectApplicationQVW() {
+  let [modalVisible, setModalVisible] = React.useState(false);
+  let [newQVWName, setNewQVWName] = React.useState("");
   const defaultStartApp = "variableeditor"; // Could at some point be a setting so it can be changed
+  const dispatch = useDispatch();
   const QVWs = useSelector(QVWSelection);
+
+  const onAddQVWName = () => {
+    dispatch(addQVWName(newQVWName));
+    onHideModal();
+  };
+  const onDeleteQVW = id => {
+    dispatch(removeQVWName(id));
+  };
+  const onHideModal = () => {
+    setModalVisible(false);
+    setNewQVWName("");
+  };
   return (
     <Wrapper>
       <H1>Select Application</H1>
@@ -61,9 +85,16 @@ function SelectApplicationQVW() {
           QVWs.map(qvw => {
             return (
               <li key={qvw.id}>
-                <MyLink to={`/${qvw.qvwName}/${defaultStartApp}`}>
-                  {qvw.qvwName}
-                </MyLink>
+                <QVWListItem>
+                  <MyLink to={`/${qvw.qvwName}/${defaultStartApp}`}>
+                    {qvw.qvwName}
+                  </MyLink>
+                  <DeleteButton
+                    type="danger"
+                    icon="delete"
+                    onClick={() => onDeleteQVW(qvw.id)}
+                  />
+                </QVWListItem>
               </li>
             );
           })}
@@ -75,11 +106,24 @@ function SelectApplicationQVW() {
           shape="round"
           size="large"
           icon="plus"
-          onClick={() => alert("Not Yet implemented")}
+          onClick={() => {
+            setModalVisible(true);
+          }}
         >
           Add New
         </Button>
       </Tooltip>
+      <Modal
+        title="Add QVW Name"
+        visible={modalVisible}
+        onOk={onAddQVWName}
+        onCancel={onHideModal}
+      >
+        <Input
+          value={newQVWName}
+          onChange={e => setNewQVWName(e.target.value)}
+        />
+      </Modal>
     </Wrapper>
   );
 }
