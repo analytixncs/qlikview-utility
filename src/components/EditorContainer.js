@@ -5,7 +5,7 @@ import { Route, Switch } from "react-router-dom";
 import VariableStateProvider from "./context/variableStateContext";
 import EditorHeader from "./EditorHeader";
 import VariableMain from "./VariableEditor/VariableMain";
-import VariableAddNew from "./VariableEditor/VariableAddNew";
+import VariableAddNew from "./VariableEditor/VariableAddNewFormik";
 import GroupEditor from "./GroupEditor/GroupMain";
 
 const Wrapper = styled.div`

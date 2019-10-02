@@ -92,6 +92,11 @@ export const selectQVWVariablesStats = createSelector(
   }
 );
 
+/**
+ * selectQVWGroups
+ * @returns {array} - returns an array of unique alpha ordered groups from the
+ * passed selectedQVW parameter.
+ */
 export const selectQVWGroups = createSelector(
   [selectAllVariables, (_, selectedQVW) => selectedQVW],
   (variables, selectedQVW) => {
@@ -109,5 +114,24 @@ export const selectQVWGroups = createSelector(
       _fp.filter(variable => variable.application === selectedQVW)
     )(variables);
     return qvwGroups;
+  }
+);
+
+export const selectDoesVariableExist = createSelector(
+  [selectAllVariables, (_, props) => props],
+  (variables, { selectedQVW, newVariableName }) => {
+    return variables
+      .filter(variable => variable.application === selectedQVW)
+      .map(variable => variable.name)
+      .includes(newVariableName);
+  }
+);
+
+export const selectVariableNameArray = createSelector(
+  [selectAllVariables, (_, props) => props],
+  (variables, selectedQVW) => {
+    return variables
+      .filter(variable => variable.application === selectedQVW)
+      .map(variable => variable.name);
   }
 );

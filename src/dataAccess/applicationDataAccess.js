@@ -31,6 +31,13 @@ async function getQVVariables(application = undefined) {
   return qvVariables;
 }
 
+/**
+ * updateQVVariable
+ *
+ * @param {*} id
+ * @param {*} updatedQVVar
+ * @returns {array} - returns the latest version of all the variables
+ */
 async function updateQVVariable(id, updatedQVVar) {
   // Load variable file
   let qvVariables = await getQVVariables();
@@ -59,6 +66,21 @@ async function updateQVVariable(id, updatedQVVar) {
 
   await writeQVFile("VAR", newQVVars);
   return newQVVars;
+}
+
+/**
+ * insertQVVariable
+ *
+ * @param {*} newQVVariable - new Variable object
+ * @returns
+ */
+async function insertQVVariable(newQVVariable) {
+  // Load variable file
+  let qvVariables = await getQVVariables();
+  qvVariables.push(newQVVariable);
+  console.log("new vars", qvVariables);
+  await writeQVFile("VAR", qvVariables);
+  return qvVariables;
 }
 //=========================================================================
 //= GROUP FILE FUNCTIONS
@@ -108,6 +130,7 @@ export {
   getQVVariables,
   getQVGroups,
   updateQVVariable,
+  insertQVVariable,
   saveQVWName,
   deleteQVWName
 };
