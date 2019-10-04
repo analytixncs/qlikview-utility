@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { withFormik, Form, Field, yupToFormErrors } from "formik";
-import { Input, Select, Button, notification } from "antd";
+import { Input, Select, Button, notification, Checkbox } from "antd";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import * as yup from "yup";
@@ -19,7 +19,17 @@ import {
 import { addVariable } from "../../store/variableEditor";
 
 const VarListWrapper = styled.div`
-  margin: calc(${editorHeaderHeight} + ${variableGroupTopMargin}) 25px;
+  margin: calc(${editorHeaderHeight} + ${variableGroupTopMargin}) auto;
+  width: 800px;
+  & > form {
+    background-color: #e3f2fd;
+    border: 1px solid lightslategray;
+    padding: 0 0 15px 15px;
+    box-shadow: 0px 0px 5px 0px #000000;
+  }
+  & label {
+    font-weight: bold;
+  }
 `;
 
 // const FormWrapper = styled(Form)`
@@ -36,7 +46,12 @@ const FormRow = styled.div`
 const FormItem = styled.div`
   display: flex;
   flex-direction: column;
-  width: 100%;
+  width: ${props => (props.width ? props.width : "100%")};
+  padding-right: 15px;
+  & > textarea {
+    font-family: ${props => (props.isCode ? `"Fira Code", monospace` : null)};
+    font-size: ${props => (props.isCode ? "1.2rem" : null)};
+  }
 `;
 
 const ErrorDiv = styled.div`
@@ -76,7 +91,7 @@ function VariableAddNew() {
       description: values.description,
       expression: values.expression,
       notes: values.notes,
-      locked: false
+      locked: values.locked
     };
 
     let x = await dispatch(addVariable(newVarObj));
@@ -110,15 +125,10 @@ const MyForm = ({
   let { selectedQVW } = useParams();
   let groups = useSelector(state => selectQVWGroups(state, selectedQVW));
 
-  // Only way I could figureout how to set the initial value dynamically on the
-  // antd Select component
-  React.useEffect(() => {
-    setFieldValue("group", groups[0]);
-  }, []);
   return (
     <Form>
       <FormRow flexDirection="row">
-        <FormItem>
+        <FormItem width="400px">
           <label>Group:</label>
           <Field
             name="group"
@@ -163,7 +173,7 @@ const MyForm = ({
         </FormItem>
       </FormRow>
       <FormRow>
-        <FormItem>
+        <FormItem isCode>
           <label>Expression</label>
           <Field
             name="expression"
@@ -184,6 +194,25 @@ const MyForm = ({
           />
         </FormItem>
       </FormRow>
+      <FormRow>
+        <FormItem>
+          <Field
+            name="locked"
+            render={({ field }) => {
+              return (
+                <Checkbox
+                  {...field}
+                  style={{ fontWeight: "bold" }}
+                  checked={field.value}
+                  onChange={e => setFieldValue("locked", e.target.checked)}
+                >
+                  Lock?
+                </Checkbox>
+              );
+            }}
+          />
+        </FormItem>
+      </FormRow>
       <Button disabled={isSubmitting} htmlType="submit">
         Add
       </Button>
@@ -198,8 +227,8 @@ const FormikForm = withFormik({
       name: "",
       description: "",
       expression: "",
-      notes: ""
-      //ADD LOCKED!!
+      notes: "",
+      locked: false
     };
   },
   validationSchema: yup.object().shape({
@@ -217,6 +246,7 @@ const FormikForm = withFormik({
     // the props that come in the FormikBag (destructured above) are the props from
     // the "calling" component.  This component can house the submit function
     //This is simulating our submit
+    console.log("values to sumbit", values);
     let errors = await props.submit(values);
     console.log("after await call");
     if (errors) {
