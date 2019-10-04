@@ -16,14 +16,16 @@ const Wrapper = styled.div`
   margin: 4px;
   padding: 4px;
   width: 250px;
-  overflow: hidden;
-  text-overflow: ellipsis;
 `;
 
 const VariableName = styled.div`
   display: inline-block;
   margin-left: 5px;
   font-weight: bold;
+  width: 215px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 `;
 
 const VariableItem = ({ variable }) => {
@@ -33,7 +35,7 @@ const VariableItem = ({ variable }) => {
   // onClick on Wrapper is to make sure click on variable div doesn't bubble up to enclosing divs onclick handler
   // which sets the groupFilter
   return (
-    <Tooltip title={description} mouseEnterDelay={0.8}>
+    <Tooltip title={`${name} -- ${description}`} mouseEnterDelay={0.8}>
       <Wrapper
         onClick={e => {
           e.stopPropagation();

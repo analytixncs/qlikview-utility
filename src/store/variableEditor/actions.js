@@ -1,12 +1,20 @@
 import {
   getQVVariables,
   updateQVVariable,
-  insertQVVariable
+  insertQVVariable,
+  deleteQVVariable
 } from "../../dataAccess/applicationDataAccess";
 import * as types from "./types";
 import { secondsTimeStampNow } from "../../dateHelpers";
 import uuidv4 from "uuid/v4";
 
+/** LOAD (INITALIZE) VARIABLEs Action Creator ---------------
+ * loadVariables - action creator (thunk) for loading variables into store
+ * Used primarily as an initializer.
+ * If no application name passed, then all variables from file will be loaded.
+ *
+ * @param {string} application - application name to load, if null or undefined, then load all variables
+ */
 function loadVariables(application) {
   return async dispatch => {
     let qvVariables = await getQVVariables(application);
@@ -19,14 +27,8 @@ function loadVariables(application) {
       payload: { status: false }
     });
   };
-  // --- OLD PROMISE WAY BELOW ---
-  // return dispatch => {
-  //   let request = getQVWNames();
-  //   request.then(applicationNames => {
-  //     dispatch({ type: LOAD_QVW_NAMES, applicationNames });
-  //   });
-  // };
 }
+
 /** UPDATE VARIABLE Action Creator ---------------
  * updateVariable - action creator (thunk) that takes in information on a variable that
  * has been updated and writes it to disk (async), then dispatches the udpate
@@ -74,6 +76,20 @@ function addVariable(newVariable) {
   };
 }
 
+/** DELETE VARIABLE Action Creator ---------------
+ * deleteVariable - action creator (thunk) that takes in id of variable to delete
+ * and deletes from disk and redux store.
+ *
+ * @param {string} id - id of the variable to upate
+ */
+function deleteVariable(id) {
+  return async dispatch => {
+    // returned variable is new list of ALL variables, makes reducer update easy
+    let newQVVars = await deleteQVVariable(id);
+    dispatch({ type: types.VAR_DELETE, payload: newQVVars });
+  };
+}
+
 function setSearchTerm(searchTerm) {
   return { type: types.VAR_SET_SEARCH_TERM, payload: searchTerm };
 }
@@ -99,5 +115,6 @@ export {
   setLoadVariablesWorking,
   clearVariables,
   updateVariable,
-  addVariable
+  addVariable,
+  deleteVariable
 };

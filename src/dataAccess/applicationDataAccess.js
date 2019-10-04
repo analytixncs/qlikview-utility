@@ -78,7 +78,20 @@ async function insertQVVariable(newQVVariable) {
   // Load variable file
   let qvVariables = await getQVVariables();
   qvVariables.push(newQVVariable);
-  console.log("new vars", qvVariables);
+  await writeQVFile("VAR", qvVariables);
+  return qvVariables;
+}
+
+/**
+ * deleteQVVariable
+ *
+ * @param {string} id - id of variable to delete
+ * @returns
+ */
+async function deleteQVVariable(id) {
+  // Load variable file
+  let qvVariables = await getQVVariables();
+  qvVariables = qvVariables.filter(variable => variable.id !== id);
   await writeQVFile("VAR", qvVariables);
   return qvVariables;
 }
@@ -131,6 +144,7 @@ export {
   getQVGroups,
   updateQVVariable,
   insertQVVariable,
+  deleteQVVariable,
   saveQVWName,
   deleteQVWName
 };

@@ -1,8 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
+import { useDispatch } from "react-redux";
 import { Button } from "antd";
 import { useVariableStateSetters } from "../context/variableStateContext";
+import { deleteVariable } from "../../store/variableEditor";
 
 const Wrapper = styled.div`
   display: flex;
@@ -72,7 +74,7 @@ function VariableReadOnly({ variable }) {
   } = variable;
 
   let { setViewingId, setIsEditing } = useVariableStateSetters();
-
+  let dispatch = useDispatch();
   return (
     <React.Fragment>
       <Field>
@@ -100,12 +102,7 @@ function VariableReadOnly({ variable }) {
             Close
           </Button>
         </div>
-        <Button
-          type="danger"
-          onClick={() =>
-            console.log("call the action creator for deleting var id", id)
-          }
-        >
+        <Button type="danger" onClick={() => dispatch(deleteVariable(id))}>
           Delete
         </Button>
       </ButtonGroupWrapper>

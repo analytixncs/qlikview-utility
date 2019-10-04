@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { withFormik, Form, Field, yupToFormErrors } from "formik";
 import { Input, Select, Button, notification, Checkbox } from "antd";
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import * as yup from "yup";
 import {
@@ -31,11 +31,6 @@ const VarListWrapper = styled.div`
     font-weight: bold;
   }
 `;
-
-// const FormWrapper = styled(Form)`
-//   display: flex;
-//   flex-direction: column;
-// `;
 
 const FormRow = styled.div`
   display: flex;
@@ -124,7 +119,7 @@ const MyForm = ({
 }) => {
   let { selectedQVW } = useParams();
   let groups = useSelector(state => selectQVWGroups(state, selectedQVW));
-
+  let history = useHistory();
   return (
     <Form>
       <FormRow flexDirection="row">
@@ -213,8 +208,14 @@ const MyForm = ({
           />
         </FormItem>
       </FormRow>
-      <Button disabled={isSubmitting} htmlType="submit">
-        Add
+      <Button type="primary" disabled={isSubmitting} htmlType="submit">
+        Add Variable
+      </Button>
+      <Button
+        disabled={isSubmitting}
+        onClick={() => history.push(`/${selectedQVW}/variableeditor`)}
+      >
+        Close
       </Button>
     </Form>
   );

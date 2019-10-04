@@ -4,8 +4,7 @@ import { withRouter } from "react-router-dom";
 import styled from "styled-components";
 import { Button, Icon } from "antd";
 import { editorHeaderHeight } from "../styles/standardStyles";
-
-import { selectQVWVariablesGrouped } from "../store/variableEditor";
+import VariableHeaderButtons from "./VariableEditor/VariableHeaderButtons";
 
 const Wrapper = styled.div`
   display: flex;
@@ -58,6 +57,7 @@ const EditorHeader = ({ history, location, match }) => {
   // let groupedVars = useSelector(state =>
   //   selectQVWVariablesGrouped(state, selectedQVW)
   // );
+  console.log("location", location.pathname);
   let activeEditor = location.pathname.split("/").includes("variableeditor")
     ? "Variable Editor"
     : location.pathname.split("/").includes("groupeditor")
@@ -92,11 +92,7 @@ const EditorHeader = ({ history, location, match }) => {
       />
 
       <Title>{`${selectedQVW} ${activeEditor}`}</Title>
-      <Button
-        onClick={() => history.push(`/${selectedQVW}/variableeditor/addnew`)}
-      >
-        Add New
-      </Button>
+      <VariableHeaderButtons />
     </Wrapper>
   );
 };

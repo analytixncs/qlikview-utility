@@ -5,3 +5,4 @@ export const VAR_SET_GROUP_FILTER = "VAR_SET_GROUP_FILTER";
 export const CLEAR_VARIABLES = "CLEAR_VARIABLES";
 export const VAR_UPDATE = "VAR_UPDATE";
 export const VAR_ADD = "VAR_ADD";
+export const VAR_DELETE = "VAR_DELETE";
