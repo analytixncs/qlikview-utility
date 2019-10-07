@@ -1,7 +1,16 @@
 import React from "react";
 import styled from "styled-components";
-import { withFormik, Form, Field, yupToFormErrors } from "formik";
-import { Input, Select, Button, notification, Checkbox } from "antd";
+import { withFormik, Form, Field } from "formik";
+import {
+  Input,
+  Select,
+  Button,
+  notification,
+  Checkbox,
+  Divider,
+  Icon,
+  Modal
+} from "antd";
 import { useParams, useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import * as yup from "yup";
@@ -18,14 +27,18 @@ import {
 } from "../../store/variableEditor";
 import { addVariable } from "../../store/variableEditor";
 
+//------------------------------
+// Styled Components
+//------------------------------
 const VarListWrapper = styled.div`
   margin: calc(${editorHeaderHeight} + ${variableGroupTopMargin}) auto;
+  box-shadow: 3px 3px 9px -2px #000000;
+  border: 1px solid #abbfcf;
   width: 800px;
   & > form {
     background-color: #e3f2fd;
-    border: 1px solid lightslategray;
     padding: 0 0 15px 15px;
-    box-shadow: 0px 0px 5px 0px #000000;
+    border: 1px solid #abbfcf;
   }
   & label {
     font-weight: bold;
@@ -58,11 +71,34 @@ const ErrorDiv = styled.div`
   }
 `;
 
+const TitleWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #abbfcf;
+  background-color: white;
+  padding: 0 0 0 10px;
+`;
+
+const Title = styled.div`
+  font-size: 1.2rem;
+  font-weight: bold;
+`;
+
+const CloseButton = styled(Button)`
+  border: 0;
+  border-radius: 0;
+  &:hover {
+    background-color: red;
+    color: white;
+  }
+`;
+//--------------------------------------------------
 // ----------------------
 // - VariableAddNew Component
 //-----------------------
 function VariableAddNew() {
   let { selectedQVW } = useParams();
+  let history = useHistory();
   let dispatch = useDispatch();
   let variableNameArray = useSelector(state =>
     selectVariableNameArray(state, selectedQVW)
@@ -103,6 +139,10 @@ function VariableAddNew() {
   };
   return (
     <VarListWrapper>
+      <TitleWrapper>
+        <Title>Add New Variable</Title>
+        <CloseButton icon="close" onClick={() => history.goBack()} />
+      </TitleWrapper>
       <FormikForm submit={submit} initialGroup={initialGroup} />
     </VarListWrapper>
   );
@@ -119,6 +159,16 @@ const MyForm = ({
 }) => {
   let { selectedQVW } = useParams();
   let groups = useSelector(state => selectQVWGroups(state, selectedQVW));
+  let [newGroup, setNewGroup] = React.useState("");
+  let [isVisibleModal, setIsVisibleModal] = React.useState(false);
+
+  // Add a new group if doesn't exist in QVW
+  // Called from Modal shown if isVisibleModal is set to show in Select
+  const addGroup = () => {
+    setIsVisibleModal(false);
+    setFieldValue("group", newGroup);
+    setNewGroup("");
+  };
   let history = useHistory();
   return (
     <Form>
@@ -131,6 +181,21 @@ const MyForm = ({
               <Select
                 {...field}
                 onChange={value => setFieldValue("group", value)}
+                // Renders an extra "option" to add a new group
+                dropdownRender={menu => (
+                  <div>
+                    {menu}
+                    <Divider style={{ margin: "4px 0" }} />
+                    <div
+                      style={{ padding: "4px 8px", cursor: "pointer" }}
+                      onMouseDown={e => e.preventDefault()}
+                      onClick={() => setIsVisibleModal(true)}
+                    >
+                      <Icon type="plus" />
+                      {` New Group`}
+                    </div>
+                  </div>
+                )}
               >
                 {groups.map(group => (
                   <Select.Option key={group} value={group}>
@@ -217,6 +282,19 @@ const MyForm = ({
       >
         Close
       </Button>
+      <Modal
+        visible={isVisibleModal}
+        title="Enter New Group Name"
+        onOk={addGroup}
+        onCancel={() => setIsVisibleModal(false)}
+      >
+        <Input
+          autoFocus
+          value={newGroup}
+          onChange={e => setNewGroup(e.target.value)}
+          onPressEnter={addGroup}
+        />
+      </Modal>
     </Form>
   );
 };

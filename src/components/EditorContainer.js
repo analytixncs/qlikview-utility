@@ -6,6 +6,7 @@ import VariableStateProvider from "./context/variableStateContext";
 import EditorHeader from "./EditorHeader";
 import VariableMain from "./VariableEditor/VariableMain";
 import VariableAddNew from "./VariableEditor/VariableAddNewFormik";
+import VariableExport from "./VariableEditor/VariableExport";
 import GroupEditor from "./GroupEditor/GroupMain";
 
 const Wrapper = styled.div`
@@ -22,6 +23,9 @@ const EditorContainer = props => {
       <Switch>
         <Route path="/:selectedQVW/variableeditor/addnew">
           <VariableAddNew />
+        </Route>
+        <Route path="/:selectedQVW/variableeditor/export">
+          <VariableExport />
         </Route>
         <Route path="/:selectedQVW/variableeditor">
           <VariableStateProvider>

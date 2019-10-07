@@ -3,6 +3,7 @@ const path = require("path");
 const fs = window.require("fs");
 const _ = require("lodash");
 const { remote } = window.require("electron");
+const X2JS = require("x2js"); //npm module to convert js object to XML
 
 // make promise version of fs.readFile()
 const readFilePromise = filename => {
@@ -155,4 +156,60 @@ async function writeQVFile(QVFileToWrite = undefined, data) {
     throw myError;
   }
 }
-export { readApplicationNames, readQVVariables, readQVFile, writeQVFile };
+
+//Takes the appName and writes out an XML file of the groups data to the Spreadsheets directory
+//returns the applicationGroups data
+async function writeXMLData(appName) {
+  // Define default patha and filename
+  //!! TODO - Have a setting that stores default path for variables in production
+  let xmlFiledefaultPath =
+    process.env.NODE_ENV === "development"
+      ? path.join(remote.app.getAppPath(), "../Spreadsheets/", `${appName}.xml`)
+      : path.join(
+          path.dirname(remote.app.getPath("exe")),
+          "../Spreadsheets/",
+          `${appName}.xml`
+        );
+  // getCurrentWindow() makes the dialog a modal
+  let xmlPath = remote.dialog.showSaveDialogSync(remote.getCurrentWindow(), {
+    title: "Save XML",
+    defaultPath: xmlFiledefaultPath,
+    filters: [{ name: "XML", extensions: ["xml"] }]
+  });
+  // If cancelled, then just return, don't export
+  if (!xmlPath) return;
+  //----------------------------------
+  // - Get variables ready for export
+  let variables = await readQVFile("VAR");
+  let applicationVars = variables.filter(
+    variable => variable.application === appName
+  );
+  let appNameSansSpaces = appName.replace(/\s+/g, "").toLowerCase();
+  const x2js = new X2JS();
+  let xmlString = x2js.js2xml({ variable: applicationVars });
+  //Enclose xml created with the appName, otherwise Qlik won't recognize properly
+  applicationVars = `<${appNameSansSpaces}>${xmlString}</${appNameSansSpaces}>`;
+  //write the groups array back to the server disk navigating to the include directory
+  try {
+    let results = await writeFilePromise(xmlPath, applicationVars);
+    console.log("writeXMLData Results", results);
+    return results;
+  } catch (err) {
+    let myError = {
+      error: err,
+      errno: err.errno,
+      code: err.code,
+      message: err.message,
+      path: err.path
+    };
+    throw myError;
+  }
+}
+
+export {
+  readApplicationNames,
+  readQVVariables,
+  readQVFile,
+  writeQVFile,
+  writeXMLData
+};
