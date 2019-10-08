@@ -1,6 +1,8 @@
 import React from "react";
 import { useHistory, useParams } from "react-router-dom";
-import { Button, Alert, Progress } from "antd";
+import { useSelector } from "react-redux";
+import { Button, Alert, Checkbox } from "antd";
+import { DragDropContext } from "react-beautiful-dnd";
 import styled from "styled-components";
 import {
   editorHeaderHeight,
@@ -10,6 +12,7 @@ import {
 } from "../../styles/standardStyles";
 
 import { writeXMLData } from "../../dataAccess/nativeFileAccess";
+import VariableExportFields from "./VariableExportFields";
 
 const VarExportWrapper = styled.div`
   margin: calc(${editorHeaderHeight} + ${variableGroupTopMargin}) 25px;
@@ -44,6 +47,14 @@ const ExportBody = styled.div`
   padding: 10px;
 `;
 
+const OptionsWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  & > label {
+    margin-left: 8px;
+  }
+`;
+
 const ButtonWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -53,13 +64,31 @@ const ButtonWrapper = styled.div`
 const VariableExport = props => {
   let history = useHistory();
   let { selectedQVW } = useParams();
+  let variableFieldsObj = useSelector(
+    state => state.variableEditor.variables[0]
+  );
   let [status, setStatus] = React.useState({
     isError: false,
     isComplete: false,
     message: undefined
   });
   let [loading, setLoading] = React.useState(false);
+  // initialize to all boxes being checked
+  let [fieldState, setFieldState] = React.useState();
+  let [variableFields, setVariableFields] = React.useState();
 
+  React.useEffect(() => {
+    let varFieldsArray = Object.keys(variableFieldsObj).map(key => key);
+    let initFieldState = Object.keys(variableFieldsObj).reduce(
+      (final, curr) => {
+        return { ...final, [curr]: true };
+      },
+      {}
+    );
+    setVariableFields(varFieldsArray);
+    setFieldState(initFieldState);
+  }, []);
+  //Export function
   const exportXML = async () => {
     setLoading(true);
     setStatus({ isError: false, message: undefined });
@@ -75,6 +104,27 @@ const VariableExport = props => {
       setLoading(false);
     }
   };
+
+  const onDragEnd = result => {
+    let { destination, source, draggableId } = result;
+    console.log("you been dragged", destination, source, draggableId);
+    if (!destination) {
+      return;
+    }
+    if (
+      destination.droppableId == source.droppableId &&
+      destination.index === source.index
+    ) {
+      return;
+    }
+
+    const newVarFields = [...variableFields];
+    newVarFields.splice(source.index, 1);
+    newVarFields.splice(destination.index, 0, draggableId);
+    console.log(newVarFields);
+    setVariableFields(newVarFields);
+  };
+
   return (
     <VarExportWrapper>
       <TitleWrapper>
@@ -82,6 +132,18 @@ const VariableExport = props => {
         <CloseButton icon="close" onClick={() => history.goBack()} />
       </TitleWrapper>
       <ExportBody>
+        <OptionsWrapper>
+          <p>Fields to Export</p>
+          <DragDropContext onDragEnd={onDragEnd}>
+            {variableFields && fieldState && (
+              <VariableExportFields
+                variableFields={variableFields}
+                fieldState={fieldState}
+                setFieldState={setFieldState}
+              />
+            )}
+          </DragDropContext>
+        </OptionsWrapper>
         <ButtonWrapper>
           <Button
             icon="export"

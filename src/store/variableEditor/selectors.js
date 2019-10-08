@@ -81,6 +81,15 @@ export const selectQVWVariablesGrouped = createSelector(
   }
 );
 
+/**
+ * ReSelect selector that returns "stats" for the variables for a specific QVW
+ *  {
+ *    variableCount: int
+ *    groupCount: int
+ *  }
+ * How to use:
+ * selectQVWVariablesStats(state, selectedQVW)
+ */
 export const selectQVWVariablesStats = createSelector(
   [selectQVWVariables],
   variables => {
