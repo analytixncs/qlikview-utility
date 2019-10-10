@@ -21,7 +21,7 @@ const VariableExportFields = ({
         <FieldsContainer ref={provided.innerRef} {...provided.droppableProps}>
           {variableFields.map((field, idx) => (
             <VariableExportField
-              key={idx}
+              key={field}
               index={idx}
               field={field}
               fieldState={fieldState}

@@ -135,6 +135,14 @@ async function deleteQVWName(QVWNames) {
   return await writeQVFile("QVWNAMES", QVWNames);
 }
 
+//--------------------------------------
+//- SETTINGS
+//--------------------------------------
+async function getSettings() {
+  let settings = await readQVFile("SETTINGS");
+  console.log("Full Settings file contents", settings);
+  return settings;
+}
 //=========================================================================
 //= EXPORT FUNCTIONS
 //=========================================================================
@@ -146,5 +154,6 @@ export {
   insertQVVariable,
   deleteQVVariable,
   saveQVWName,
-  deleteQVWName
+  deleteQVWName,
+  getSettings
 };

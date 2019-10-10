@@ -159,7 +159,7 @@ async function writeQVFile(QVFileToWrite = undefined, data) {
 
 //Takes the appName and writes out an XML file of the groups data to the Spreadsheets directory
 //returns the applicationGroups data
-async function writeXMLData(appName) {
+async function writeXMLData(appName, fieldsToExport) {
   // Define default patha and filename
   //!! TODO - Have a setting that stores default path for variables in production
   let xmlFiledefaultPath =
@@ -184,6 +184,11 @@ async function writeXMLData(appName) {
   let applicationVars = variables.filter(
     variable => variable.application === appName
   );
+  // Pick only the fields passed to export
+  applicationVars = applicationVars.map(variable =>
+    _.pick(variable, fieldsToExport)
+  );
+
   let appNameSansSpaces = appName.replace(/\s+/g, "").toLowerCase();
   const x2js = new X2JS();
   let xmlString = x2js.js2xml({ variable: applicationVars });

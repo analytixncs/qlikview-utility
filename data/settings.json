@@ -1,0 +1,18 @@
+{
+  "variableEditor": {
+    "exportFields": [
+      "id",
+      "name",
+      "expression",
+      "description",
+      "notes",
+      "group",
+      "locked",
+      "application",
+      "createDate",
+      "modifyDate",
+      "createUser",
+      "modifyUser"
+    ]
+  }
+}

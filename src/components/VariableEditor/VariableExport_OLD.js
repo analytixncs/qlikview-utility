@@ -11,8 +11,7 @@ import {
   Spacer
 } from "../../styles/standardStyles";
 
-import { writeXMLData } from "../../dataAccess/nativeFileAccess";
-import { getSettings } from "../../dataAccess/applicationDataAccess";
+import { writeXMLData, getSettings } from "../../dataAccess/nativeFileAccess";
 import VariableExportFields from "./VariableExportFields";
 
 const VarExportWrapper = styled.div`
@@ -79,29 +78,22 @@ const VariableExport = props => {
   let [variableFields, setVariableFields] = React.useState();
 
   React.useEffect(() => {
-    const loadFields = async () => {
-      let settings = await getSettings();
-      let varFieldsArray = settings.variableEditor.exportFields;
-      let initFieldState = varFieldsArray.reduce((final, curr) => {
+    let varFieldsArray = Object.keys(variableFieldsObj).map(key => key);
+    let initFieldState = Object.keys(variableFieldsObj).reduce(
+      (final, curr) => {
         return { ...final, [curr]: true };
-      }, {});
-      setVariableFields(varFieldsArray);
-      setFieldState(initFieldState);
-    };
-    loadFields();
+      },
+      {}
+    );
+    setVariableFields(varFieldsArray);
+    setFieldState(initFieldState);
   }, []);
-  //--------------------
   //Export function
   const exportXML = async () => {
     setLoading(true);
     setStatus({ isError: false, message: undefined });
-    // Get field list to export
-    let fieldsToExport = variableFields
-      .map(field => (fieldState[field] ? field : null))
-      .filter(field => field);
-    console.log("fieldsToExport", fieldsToExport);
     try {
-      let results = await writeXMLData(selectedQVW, fieldsToExport);
+      let results = await writeXMLData(selectedQVW);
       setStatus({
         isComplete: results && true,
         message: `Variables exported to \n ${results}`
