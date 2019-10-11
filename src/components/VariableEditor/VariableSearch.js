@@ -11,14 +11,15 @@ import {
 } from "../../store/variableEditor";
 import {
   editorHeaderHeight,
-  variableSearchHeight
+  variableSearchHeight,
+  filterBarBGColor
 } from "../../styles/standardStyles";
 
 const Sticky = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
-  background: lightgray;
+  background: ${filterBarBGColor};
   height: ${variableSearchHeight};
   padding: 5px 15px;
   position: fixed;

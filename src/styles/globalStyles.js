@@ -1,9 +1,9 @@
 import { createGlobalStyle } from "styled-components";
-import { baseColor } from "./standardStyles";
+import { applicationBGColor } from "./standardStyles";
 
 const GlobalStyle = createGlobalStyle`
   body {
-    background-color: ${baseColor};
+    background-color: ${applicationBGColor};
   }
 `;
 

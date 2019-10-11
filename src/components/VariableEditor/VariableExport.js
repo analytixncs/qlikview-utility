@@ -1,19 +1,22 @@
 import React from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { Button, Alert, Checkbox } from "antd";
+import { Button, Alert, message, Tooltip } from "antd";
 import { DragDropContext } from "react-beautiful-dnd";
 import styled from "styled-components";
 import {
   editorHeaderHeight,
   variableSearchHeight,
   variableGroupTopMargin,
-  Spacer
+  Spacer,
+  contentBgColor
 } from "../../styles/standardStyles";
 
 import { writeXMLData } from "../../dataAccess/nativeFileAccess";
 import { getSettings } from "../../dataAccess/applicationDataAccess";
 import VariableExportFields from "./VariableExportFields";
+
+let myStorage = window.localStorage;
 
 const VarExportWrapper = styled.div`
   margin: calc(${editorHeaderHeight} + ${variableGroupTopMargin}) 25px;
@@ -46,6 +49,7 @@ const CloseButton = styled(Button)`
 
 const ExportBody = styled.div`
   padding: 10px;
+  background-color: ${contentBgColor};
 `;
 
 const OptionsWrapper = styled.div`
@@ -54,6 +58,22 @@ const OptionsWrapper = styled.div`
   & > label {
     margin-left: 8px;
   }
+`;
+const ExportContent = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
+
+const ExportContentButtons = styled.div`
+  display: flex;
+  flex-direction: row;
+  height: 75px;
+  margin: 0 0 0 20px;
+  align-items: center;
+  border: 1px solid gray;
+  border-radius: 5px;
+  padding: 15px;
+  background-color: #ffecb3;
 `;
 
 const ButtonWrapper = styled.div`
@@ -65,9 +85,6 @@ const ButtonWrapper = styled.div`
 const VariableExport = props => {
   let history = useHistory();
   let { selectedQVW } = useParams();
-  let variableFieldsObj = useSelector(
-    state => state.variableEditor.variables[0]
-  );
   let [status, setStatus] = React.useState({
     isError: false,
     isComplete: false,
@@ -76,15 +93,25 @@ const VariableExport = props => {
   let [loading, setLoading] = React.useState(false);
   // initialize to all boxes being checked
   let [fieldState, setFieldState] = React.useState();
+  // These are all fields and order of fields
   let [variableFields, setVariableFields] = React.useState();
 
+  //------------------------------------------------
   React.useEffect(() => {
     const loadFields = async () => {
+      //Check if anything in localstorage
+      let varFieldsArray = JSON.parse(myStorage.getItem("variableFields"));
+      let initFieldState = JSON.parse(myStorage.getItem("fieldState"));
       let settings = await getSettings();
-      let varFieldsArray = settings.variableEditor.exportFields;
-      let initFieldState = varFieldsArray.reduce((final, curr) => {
-        return { ...final, [curr]: true };
-      }, {});
+      if (!varFieldsArray) {
+        varFieldsArray = settings.variableEditor.exportFields;
+      }
+      if (!initFieldState) {
+        //setup checkbox state object
+        initFieldState = varFieldsArray.reduce((final, curr) => {
+          return { ...final, [curr]: true };
+        }, {});
+      }
       setVariableFields(varFieldsArray);
       setFieldState(initFieldState);
     };
@@ -112,7 +139,7 @@ const VariableExport = props => {
       setLoading(false);
     }
   };
-
+  //--------------------------------------------------------
   const onDragEnd = result => {
     let { destination, source, draggableId } = result;
     console.log("you been dragged", destination, source, draggableId);
@@ -129,10 +156,20 @@ const VariableExport = props => {
     const newVarFields = [...variableFields];
     newVarFields.splice(source.index, 1);
     newVarFields.splice(destination.index, 0, draggableId);
-    console.log(newVarFields);
     setVariableFields(newVarFields);
   };
-
+  //--------------------------------------------------------
+  //Save to field position and checked status to Local Storage
+  const saveToLocalStorage = () => {
+    myStorage.setItem("variableFields", JSON.stringify(variableFields));
+    myStorage.setItem("fieldState", JSON.stringify(fieldState));
+    message.success("Field Order and checked state saved!", 2);
+  };
+  const clearLocalStorage = () => {
+    myStorage.clear();
+    message.error("Field Order and checked state deleted!", 2);
+  };
+  console.log("varFIeldsarray", variableFields);
   return (
     <VarExportWrapper>
       <TitleWrapper>
@@ -141,27 +178,37 @@ const VariableExport = props => {
       </TitleWrapper>
       <ExportBody>
         <OptionsWrapper>
-          <p>Fields to Export</p>
-          <DragDropContext onDragEnd={onDragEnd}>
-            {variableFields && fieldState && (
-              <VariableExportFields
-                variableFields={variableFields}
-                fieldState={fieldState}
-                setFieldState={setFieldState}
-              />
-            )}
-          </DragDropContext>
+          <h3>Fields to Export</h3>
+          <ExportContent>
+            <DragDropContext onDragEnd={onDragEnd}>
+              {variableFields && fieldState && (
+                <VariableExportFields
+                  variableFields={variableFields}
+                  fieldState={fieldState}
+                  setFieldState={setFieldState}
+                />
+              )}
+            </DragDropContext>
+            <ExportContentButtons>
+              <Button
+                icon="export"
+                onClick={exportXML}
+                type="primary"
+                loading={loading}
+              >
+                Export
+              </Button>
+              <Spacer width="20" />
+              <Tooltip title="Save Field Order and Checked Status">
+                <Button icon="save" onClick={saveToLocalStorage} />
+              </Tooltip>
+              <Spacer />
+              <Tooltip title="Clear Saved Field Order and Checked Status">
+                <Button icon="delete" onClick={clearLocalStorage} />
+              </Tooltip>
+            </ExportContentButtons>
+          </ExportContent>
         </OptionsWrapper>
-        <ButtonWrapper>
-          <Button
-            icon="export"
-            onClick={exportXML}
-            type="primary"
-            loading={loading}
-          >
-            Export
-          </Button>
-        </ButtonWrapper>
 
         <Spacer />
         {status.isError && (

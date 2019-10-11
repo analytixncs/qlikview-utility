@@ -6,8 +6,10 @@ import { Droppable, Draggable } from "react-beautiful-dnd";
 import VariableExportField from "./VariableExportField";
 
 const FieldsContainer = styled.div`
-  border: 1px solid black;
-  padding: 5px;
+  border: 1px solid gray;
+  border-radius: 5px;
+  padding: 15px;
+  background-color: #ffecb3;
 `;
 
 const VariableExportFields = ({

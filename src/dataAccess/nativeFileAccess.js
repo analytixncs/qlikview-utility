@@ -162,7 +162,7 @@ async function writeQVFile(QVFileToWrite = undefined, data) {
 async function writeXMLData(appName, fieldsToExport) {
   // Define default patha and filename
   //!! TODO - Have a setting that stores default path for variables in production
-  let xmlFiledefaultPath =
+  let filedefaultPath =
     process.env.NODE_ENV === "development"
       ? path.join(remote.app.getAppPath(), "../Spreadsheets/", `${appName}.xml`)
       : path.join(
@@ -171,13 +171,20 @@ async function writeXMLData(appName, fieldsToExport) {
           `${appName}.xml`
         );
   // getCurrentWindow() makes the dialog a modal
-  let xmlPath = remote.dialog.showSaveDialogSync(remote.getCurrentWindow(), {
+  let filePath = remote.dialog.showSaveDialogSync(remote.getCurrentWindow(), {
     title: "Save XML",
-    defaultPath: xmlFiledefaultPath,
-    filters: [{ name: "XML", extensions: ["xml"] }]
+    defaultPath: filedefaultPath,
+    filters: [
+      { name: "XML", extensions: ["xml"] },
+      { name: "JSON", extensions: ["json"] }
+    ]
   });
+
+  //If user puts on unknown extension, export in XML format
+  let exportFormat = path.extname(filePath).includes("json") ? "json" : "xml";
+
   // If cancelled, then just return, don't export
-  if (!xmlPath) return;
+  if (!filePath) return;
   //----------------------------------
   // - Get variables ready for export
   let variables = await readQVFile("VAR");
@@ -189,14 +196,18 @@ async function writeXMLData(appName, fieldsToExport) {
     _.pick(variable, fieldsToExport)
   );
 
-  let appNameSansSpaces = appName.replace(/\s+/g, "").toLowerCase();
-  const x2js = new X2JS();
-  let xmlString = x2js.js2xml({ variable: applicationVars });
-  //Enclose xml created with the appName, otherwise Qlik won't recognize properly
-  applicationVars = `<${appNameSansSpaces}>${xmlString}</${appNameSansSpaces}>`;
+  if (exportFormat === "xml") {
+    let appNameSansSpaces = appName.replace(/\s+/g, "").toLowerCase();
+    const x2js = new X2JS();
+    let xmlString = x2js.js2xml({ variable: applicationVars });
+    //Enclose xml created with the appName, otherwise Qlik won't recognize properly
+    applicationVars = `<${appNameSansSpaces}>${xmlString}</${appNameSansSpaces}>`;
+  } else {
+    applicationVars = JSON.stringify(applicationVars);
+  }
   //write the groups array back to the server disk navigating to the include directory
   try {
-    let results = await writeFilePromise(xmlPath, applicationVars);
+    let results = await writeFilePromise(filePath, applicationVars);
     console.log("writeXMLData Results", results);
     return results;
   } catch (err) {

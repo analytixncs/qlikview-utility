@@ -3,7 +3,10 @@ import { useSelector } from "react-redux";
 import { withRouter } from "react-router-dom";
 import styled from "styled-components";
 import { Button, Icon } from "antd";
-import { editorHeaderHeight } from "../styles/standardStyles";
+import {
+  editorHeaderHeight,
+  mainHeaderBGColor
+} from "../styles/standardStyles";
 import VariableHeaderButtons from "./VariableEditor/VariableHeaderButtons";
 
 const Wrapper = styled.div`
@@ -13,7 +16,7 @@ const Wrapper = styled.div`
   flex-direction: row;
   height: ${editorHeaderHeight};
   align-items: center;
-  background: #64b5f6;
+  background: ${mainHeaderBGColor};
   padding-left: 10px;
   top: 0;
   width: 100%;

@@ -17,7 +17,9 @@ import * as yup from "yup";
 import {
   editorHeaderHeight,
   variableSearchHeight,
-  variableGroupTopMargin
+  variableGroupTopMargin,
+  Spacer,
+  contentBgColor
 } from "../../styles/standardStyles";
 // For group select
 import {
@@ -30,14 +32,22 @@ import { addVariable } from "../../store/variableEditor";
 //------------------------------
 // Styled Components
 //------------------------------
+
+const ButtonRow = styled.div`
+  border-top: 1px solid black;
+  margin: 0 0 0 -15px;
+  padding: 15px;
+  background-color: white;
+`;
+
 const VarListWrapper = styled.div`
   margin: calc(${editorHeaderHeight} + ${variableGroupTopMargin}) auto;
   box-shadow: 3px 3px 9px -2px #000000;
   border: 1px solid #abbfcf;
   width: 800px;
   & > form {
-    background-color: #e3f2fd;
-    padding: 0 0 15px 15px;
+    background-color: ${contentBgColor};
+    padding-left: 15px;
     border: 1px solid #abbfcf;
   }
   & label {
@@ -92,6 +102,7 @@ const CloseButton = styled(Button)`
     color: white;
   }
 `;
+
 //--------------------------------------------------
 // ----------------------
 // - VariableAddNew Component
@@ -273,15 +284,18 @@ const MyForm = ({
           />
         </FormItem>
       </FormRow>
-      <Button type="primary" disabled={isSubmitting} htmlType="submit">
-        Add Variable
-      </Button>
-      <Button
-        disabled={isSubmitting}
-        onClick={() => history.push(`/${selectedQVW}/variableeditor`)}
-      >
-        Close
-      </Button>
+      <ButtonRow>
+        <Button type="primary" disabled={isSubmitting} htmlType="submit">
+          Add Variable
+        </Button>
+        <Spacer />
+        <Button
+          disabled={isSubmitting}
+          onClick={() => history.push(`/${selectedQVW}/variableeditor`)}
+        >
+          Close
+        </Button>
+      </ButtonRow>
       <Modal
         visible={isVisibleModal}
         title="Enter New Group Name"
