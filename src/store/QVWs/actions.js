@@ -43,6 +43,12 @@ function addQVWName(newQVWName) {
 /**
  * calls function to delete QVW name with passed id from qvwnames.json
  * and dipatches action to remove QVW name from redux store.
+ * Steps to delete a QVW Name:
+ *  - Create a backup of variables for QVW
+ *  - Remove all variables from qvvariables.json
+ *  - Create a backup of groups fro QVW
+ *  - Remove all groups from qvgroups.json
+ *  - Remove QVW Name from qvwnames.json
  *
  * @param {string} id
  * @returns
@@ -51,7 +57,7 @@ function removeQVWName(id) {
   return async (dispatch, getState) => {
     let qvwNames = getState().QVWs;
     let newQVWNames = qvwNames.filter(qvwName => qvwName.id !== id);
-    await deleteQVWName(newQVWNames);
+    newQVWNames = await deleteQVWName(id);
     dispatch({ type: types.DELETE_QVW_NAME, payload: newQVWNames });
   };
 }

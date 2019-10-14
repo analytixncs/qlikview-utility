@@ -33,26 +33,72 @@ const FILES = {
   SETTINGS_FILE: "settings.json"
 };
 
-/** @memberof NativeFileAccess
+/**
+ * @memberof NativeFileAccess
  * Can't access the remote.app. feature except from within a function.  Probably after app has loaded.
- * passed either a constant with filename.ext, will return the path, relative to where the application EXE
+ * Passed a string with "filename.ext", will return the path, relative to where the application EXE
  * is located.
+ * Defaults to the /data directory or if passed a second parameter "fileLocation", that will be a subdirectory
+ * under /data
  * @param {string} dataFile - filename.ext to get full path for
+ * @param {string} fileLocation - (optional) when passed with create as subdirectory of
  * @returns {string} - returns full path including filename.ext.  will return "c:/appPath"/data/filename.ext
  *
  * @example
  * let varFile = getLocalFile("qvvariables.json")
  * // varFile = "c:\app\path\data\qvvariables.json"
+ * let backupFile = getLocalFile("qvvariablesbackup.json", 'backup')
+ * // varFile = "c:\app\path\data\backup\qvvariablesbackup.json"
  */
-const getLocalFile = dataFile => {
+const getLocalFile = (dataFile, fileLocation = "") => {
   if (process.env.NODE_ENV === "development") {
-    return path.join(remote.app.getAppPath(), "/data", dataFile);
+    return path.join(
+      remote.app.getAppPath(),
+      `/data/${fileLocation}`,
+      dataFile
+    );
   }
-  return path.join(path.dirname(remote.app.getPath("exe")), "/data", dataFile);
+  return path.join(
+    path.dirname(remote.app.getPath("exe")),
+    `/data/${fileLocation}`,
+    dataFile
+  );
 };
 
 /**
- * will return an array containing the contents of the QVWNAMES_FILE
+ * @memberof NativeFileAccess
+ * Passed "data" gets written to the "fileName" passed at the 
+ * backup location:  data\backup
+ * 
+ * @param {string} fileName - filename.ext to get backup to backup path
+ * @param {string} data - data to be written to the backup file
+ * @returns {Promise} - which resolves to filename written to
+
+ */
+const backupData = async (fileName, data) => {
+  // Make sure that backup back exists
+  let backupFile = getLocalFile(fileName, "backup");
+  // If directory doesn't exist, then create it
+  if (!fs.existsSync(path.dirname(backupFile))) {
+    fs.mkdirSync(path.dirname(backupFile));
+  }
+  try {
+    return await writeFilePromise(backupFile, data);
+  } catch (err) {
+    let myError = {
+      error: err,
+      errno: err.errno,
+      code: err.code,
+      message: err.message,
+      path: err.path
+    };
+    throw myError;
+  }
+};
+
+/**
+ * @memberof NativeFileAccess
+ * Will return an array containing the contents of the QVWNAMES_FILE
  *
  * @return {Promise.Array.<appNamesObj>} - Array of appName objects
  * **[
@@ -102,9 +148,17 @@ async function readQVVariables() {
 //--file as a javascript object.
 //---------------------------------------------------
 /**
+ * Use the FILES object to get the correct file name to read:
+ * FILES = {
+ *  VAR_FILE: "qvvariables.json",
+ *  GROUP_FILE: "qvgroups.json",
+ *  QVWNAMES_FILE: "qvwnames.json",
+ *  SETTINGS_FILE: "settings.json"
+ * }
+};
  * @param {string} [QVFileToRead=undefined] - Should pass in either VAR or GROUP to load the appropriate file
  * @returns {Array} - array of parsed JSON file
- *
+ * 
  */
 async function readQVFile(QVFileToRead = undefined) {
   if (!QVFileToRead) {
@@ -227,5 +281,6 @@ export {
   readQVVariables,
   readQVFile,
   writeQVFile,
-  writeXMLData
+  writeXMLData,
+  backupData
 };

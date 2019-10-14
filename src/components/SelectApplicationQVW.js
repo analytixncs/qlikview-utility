@@ -66,12 +66,25 @@ function SelectApplicationQVW() {
   const dispatch = useDispatch();
   const QVWs = useSelector(QVWSelection);
 
+  let { confirm } = Modal;
+  function showConfirm(id, qvwName) {
+    confirm({
+      title: `Do you want to delete "${qvwName}" QVW?`,
+      content: `When clicked all Variables and Groups associated with "${qvwName}" QVW will be deleted.
+        A backup file will be made of deleted Variables and Groups in the /data/backup directory.`,
+      onOk() {
+        return onDeleteQVW(id);
+      },
+      onCancel() {}
+    });
+  }
+
   const onAddQVWName = () => {
     dispatch(addQVWName(newQVWName));
     onHideModal();
   };
   const onDeleteQVW = id => {
-    dispatch(removeQVWName(id));
+    return dispatch(removeQVWName(id));
   };
   const onHideModal = () => {
     setModalVisible(false);
@@ -92,7 +105,7 @@ function SelectApplicationQVW() {
                   <DeleteButton
                     type="danger"
                     icon="delete"
-                    onClick={() => onDeleteQVW(qvw.id)}
+                    onClick={() => showConfirm(qvw.id, qvw.qvwName)}
                   />
                 </QVWListItem>
               </li>

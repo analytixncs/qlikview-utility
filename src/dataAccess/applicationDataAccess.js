@@ -1,10 +1,13 @@
 import {
   readApplicationNames,
   readQVFile,
-  writeQVFile
+  writeQVFile,
+  backupData
 } from "./nativeFileAccess";
 import uuidv4 from "uuid/v4";
-import { secondsTimeStampNow } from "../dateHelpers";
+import { secondsTimeStampNow, dateTimeFileFormatted } from "../dateHelpers";
+import { promisify } from "util";
+import { watchFile } from "fs";
 
 /**
  * @returns {Promise<Array.<Object>>} - Returns the application names from the json file
@@ -126,13 +129,45 @@ async function saveQVWName(newQVWName, existingQVWNames) {
 }
 
 /**
+ * Steps to delete a QVW Name:
+ *  - Create a backup of variables for QVW
+ *  - Remove all variables from qvvariables.json
+ *  - Create a backup of groups fro QVW
+ *  - Remove all groups from qvgroups.json
+ *  - Remove QVW Name from qvwnames.json
  *
  * @param {string} id - id of QVW Name to delete
  * @param {array} existingQVWNames - array of object of the existing QVW Names
  * @returns {object} -
  */
-async function deleteQVWName(QVWNames) {
-  return await writeQVFile("QVWNAMES", QVWNames);
+async function deleteQVWName(qvwId) {
+  let QVWNames = await readQVFile("QVWNAMES");
+  let variables = await readQVFile("VAR");
+  //Extract QVWName from QVWNames file
+  let QVWName = QVWNames.filter(name => name.id === qvwId)[0].qvwName;
+  let backupName = `${QVWName}-DeleteBackupOfVariables-${dateTimeFileFormatted(
+    new Date()
+  )}.json`;
+  // Backup variables for given QVW
+  let backupVariableData = variables.filter(
+    variable => variable.application === QVWName
+  );
+  try {
+    await backupData(backupName, JSON.stringify(backupVariableData));
+  } catch (err) {
+    throw err;
+  }
+  // Delete variables for given QVW
+  variables = variables.filter(variable => variable.application !== QVWName);
+  await writeQVFile("VAR", variables);
+
+  //TODO Backup groups for given QVW
+
+  // Remove QVW From qvwnames.json
+  QVWNames = QVWNames.filter(qvw => qvw.id !== qvwId);
+  await writeQVFile("QVWNAMES", QVWNames);
+  console.log("Returned QVWNames", QVWNames);
+  return QVWNames;
 }
 
 //--------------------------------------
