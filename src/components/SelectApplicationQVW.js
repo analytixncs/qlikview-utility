@@ -132,10 +132,18 @@ function SelectApplicationQVW() {
         onOk={onAddQVWName}
         onCancel={onHideModal}
       >
-        <Input
-          value={newQVWName}
-          onChange={e => setNewQVWName(e.target.value)}
-        />
+        <form
+          onSubmit={e => {
+            e.preventDefault();
+            onAddQVWName();
+          }}
+        >
+          <Input
+            value={newQVWName}
+            onChange={e => setNewQVWName(e.target.value)}
+            autoFocus
+          />
+        </form>
       </Modal>
     </Wrapper>
   );
