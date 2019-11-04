@@ -45,7 +45,7 @@ export const selectQVWVariables = createSelector(
     // Filter by searchTerm, if it exists
     if (searchTerm) {
       finalVariables = _.filter(QVWVars, obj => {
-        return obj.name.toLowerCase().includes(searchTerm);
+        return obj.name.toLowerCase().includes(searchTerm.toLowerCase());
       });
     }
     // Filter by groupFilter if it exists

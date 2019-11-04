@@ -32,6 +32,9 @@ const EditorContainer = props => {
             <VariableMain />
           </VariableStateProvider>
         </Route>
+        <Route path="/:selectedQVW/groupeditor/export">
+          <GroupEditor />
+        </Route>
         <Route path="/:selectedQVW/groupeditor">
           <GroupEditor />
         </Route>

@@ -14,7 +14,7 @@ const AppWrapper = styled.div`
 `;
 
 export default function Main(props) {
-  //console.log("in Main", props);
+  console.log("in Main", props);
   useEffect(() => {
     // Listen for File/Settings Menu message from Main process
     electron.ipcRenderer.on("route-settings", (event, message) => {

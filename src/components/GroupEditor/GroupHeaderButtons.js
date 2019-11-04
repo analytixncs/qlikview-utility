@@ -6,8 +6,7 @@ import { Button } from "antd";
 import { Spacer } from "../../styles/standardStyles";
 
 const Wrapper = styled.div``;
-
-const VariableHeaderButtons = () => {
+const GroupHeaderButtons = () => {
   let { selectedQVW } = useParams();
   let history = useHistory();
   return (
@@ -15,20 +14,20 @@ const VariableHeaderButtons = () => {
       <Button
         icon="plus"
         type="primary"
-        onClick={() => history.push(`/${selectedQVW}/variableeditor/addnew`)}
+        onClick={() => history.push(`/${selectedQVW}/groupeditor/addnew`)}
       >
-        Add New Variable
+        Add New Group
       </Button>
       <Spacer />
       <Button
         icon="export"
         type="primary"
-        onClick={() => history.push(`/${selectedQVW}/variableeditor/export`)}
+        onClick={() => history.push(`/${selectedQVW}/groupeditor/export`)}
       >
-        Export Variables
+        Export Groups
       </Button>
     </Wrapper>
   );
 };
 
-export default VariableHeaderButtons;
+export default GroupHeaderButtons;

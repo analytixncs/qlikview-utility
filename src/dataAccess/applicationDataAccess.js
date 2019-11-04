@@ -6,8 +6,6 @@ import {
 } from "./nativeFileAccess";
 import uuidv4 from "uuid/v4";
 import { secondsTimeStampNow, dateTimeFileFormatted } from "../dateHelpers";
-import { promisify } from "util";
-import { watchFile } from "fs";
 
 /**
  * @returns {Promise<Array.<Object>>} - Returns the application names from the json file
@@ -37,8 +35,8 @@ async function getQVVariables(application = undefined) {
 /**
  * updateQVVariable
  *
- * @param {*} id
- * @param {*} updatedQVVar
+ * @param {string} id
+ * @param {object} updatedQVVar
  * @returns {array} - returns the latest version of all the variables
  */
 async function updateQVVariable(id, updatedQVVar) {
@@ -74,7 +72,7 @@ async function updateQVVariable(id, updatedQVVar) {
 /**
  * insertQVVariable
  *
- * @param {*} newQVVariable - new Variable object
+ * @param {object} newQVVariable - new Variable object
  * @returns
  */
 async function insertQVVariable(newQVVariable) {
@@ -113,6 +111,70 @@ async function getQVGroups(application = undefined) {
   return qvGroups;
 }
 
+/**
+ * updateQVGroup
+ *
+ * @param {string} id
+ * @param {object} updatedQVGroup
+ * @returns {array} - returns the latest version of all the Groups
+ */
+async function updateQVGroup(id, updatedQVGroup) {
+  // Load Group file
+  let qvGroups = await getQVGroups();
+
+  let existingQVGroup = qvGroups.filter(qvGroup => qvGroup.id === id)[0];
+
+  // This ensures we get the createDate and createUser from the original record
+  // currently not reading these in.
+  updatedQVGroup = {
+    ...existingQVGroup,
+    ...updatedQVGroup
+  };
+
+  // to preserver order, loop through and update the Group when found.
+  let newQVGroups = qvGroups.map(qvGroup => {
+    if (qvGroup.id === id) {
+      return updatedQVGroup;
+    }
+    return qvGroup;
+  });
+
+  // OPTION 2: if preserving order is not important
+  // building new content be returning all variables minus the one we are updating (filter())
+  // then appending the new variable on to the end.
+  // let newQVGroups = [...qvVariables.filter(qvVar => qvVar.id !== id), updatedQVGroup];
+
+  await writeQVFile("GROUP", newQVGroups);
+  return newQVGroups;
+}
+
+/**
+ * insertQVGroup
+ *
+ * @param {object} newQVGroup - new Group object
+ * @returns
+ */
+async function insertQVGroup(newQVGroup) {
+  // Load Group file
+  let qvGroups = await getQVGroups();
+  qvGroups.push(newQVGroup);
+  await writeQVFile("GROUP", qvGroups);
+  return qvGroups;
+}
+
+/**
+ * deleteQVGroup
+ *
+ * @param {string} id - id of Group to delete
+ * @returns
+ */
+async function deleteQVGroup(id) {
+  // Load Group file
+  let qvGroups = await getQVGroups();
+  qvGroups = qvGroups.filter(group => group.id !== id);
+  await writeQVFile("GROUP", qvGroups);
+  return qvGroups;
+}
 //=========================================================================
 //= QVWNAME FILE FUNCTIONS
 //=========================================================================
@@ -173,6 +235,12 @@ async function deleteQVWName(qvwId) {
 //--------------------------------------
 //- SETTINGS
 //--------------------------------------
+
+/**
+ * Returns the contents of the /data/settings.json file.
+ *
+ * @returns {array}
+ */
 async function getSettings() {
   let settings = await readQVFile("SETTINGS");
   console.log("Full Settings file contents", settings);
@@ -186,8 +254,11 @@ export {
   getQVVariables,
   getQVGroups,
   updateQVVariable,
+  updateQVGroup,
   insertQVVariable,
+  insertQVGroup,
   deleteQVVariable,
+  deleteQVGroup,
   saveQVWName,
   deleteQVWName,
   getSettings

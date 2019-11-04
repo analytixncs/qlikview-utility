@@ -1,14 +1,15 @@
 import React from "react";
-import { withRouter, Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 function Settings(props) {
+  let history = useHistory();
   return (
     <div>
-      SETTINGS
-      <button onClick={() => props.history.push("/")}>Home</button>
-      <Link to="/vareditor/test">Test</Link>
+      <h1>Settings</h1>
+      <p>Not Yet Implemented</p>
+      <button onClick={() => history.push("/")}>Home</button>
     </div>
   );
 }
 
-export default withRouter(Settings);
+export default Settings;

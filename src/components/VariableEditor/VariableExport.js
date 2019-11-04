@@ -142,7 +142,6 @@ const VariableExport = props => {
   //--------------------------------------------------------
   const onDragEnd = result => {
     let { destination, source, draggableId } = result;
-    console.log("you been dragged", destination, source, draggableId);
     if (!destination) {
       return;
     }
@@ -174,7 +173,10 @@ const VariableExport = props => {
     <VarExportWrapper>
       <TitleWrapper>
         <Title>{`Export ${selectedQVW} Variables`} </Title>
-        <CloseButton icon="close" onClick={() => history.goBack()} />
+        <CloseButton
+          icon="close"
+          onClick={() => history.push(`/${selectedQVW}/variableeditor`)}
+        />
       </TitleWrapper>
       <ExportBody>
         <OptionsWrapper>

@@ -6,6 +6,7 @@ import {
   Select,
   Button,
   notification,
+  Alert,
   Checkbox,
   Divider,
   Icon,
@@ -16,7 +17,6 @@ import { useDispatch, useSelector } from "react-redux";
 import * as yup from "yup";
 import {
   editorHeaderHeight,
-  variableSearchHeight,
   variableGroupTopMargin,
   Spacer,
   contentBgColor
@@ -24,7 +24,6 @@ import {
 // For group select
 import {
   selectQVWGroups,
-  selectDoesVariableExist,
   selectVariableNameArray
 } from "../../store/variableEditor";
 import { addVariable } from "../../store/variableEditor";
@@ -152,7 +151,10 @@ function VariableAddNew() {
     <VarListWrapper>
       <TitleWrapper>
         <Title>Add New Variable</Title>
-        <CloseButton icon="close" onClick={() => history.goBack()} />
+        <CloseButton
+          icon="close"
+          onClick={() => history.push(`/${selectedQVW}/variableeditor`)}
+        />
       </TitleWrapper>
       <FormikForm submit={submit} initialGroup={initialGroup} />
     </VarListWrapper>
@@ -182,134 +184,136 @@ const MyForm = ({
   };
   let history = useHistory();
   return (
-    <Form>
-      <FormRow flexDirection="row">
-        <FormItem width="400px">
-          <label>Group:</label>
-          <Field
-            name="group"
-            render={({ field }) => (
-              <Select
-                {...field}
-                onChange={value => setFieldValue("group", value)}
-                // Renders an extra "option" to add a new group
-                dropdownRender={menu => (
-                  <div>
-                    {menu}
-                    <Divider style={{ margin: "4px 0" }} />
-                    <div
-                      style={{ padding: "4px 8px", cursor: "pointer" }}
-                      onMouseDown={e => e.preventDefault()}
-                      onClick={() => setIsVisibleModal(true)}
-                    >
-                      <Icon type="plus" />
-                      {` New Group`}
-                    </div>
-                  </div>
-                )}
-              >
-                {groups.map(group => (
-                  <Select.Option key={group} value={group}>
-                    {group}
-                  </Select.Option>
-                ))}
-              </Select>
-            )}
-          />
-          <ErrorDiv>
-            {errors.group && touched.group && <p>{errors.group}</p>}
-          </ErrorDiv>
-        </FormItem>
-        <FormItem>
-          <label>Variable Name:</label>
-          <Field
-            name="name"
-            render={({ field }) => <Input {...field} placeholder="Name" />}
-          />
-          <ErrorDiv>
-            {errors.name && touched.name && <p>{errors.name}</p>}
-          </ErrorDiv>
-        </FormItem>
-      </FormRow>
-
-      <FormRow>
-        <FormItem>
-          <label>Description</label>
-          <Field
-            name="description"
-            render={({ field }) => (
-              <Input.TextArea {...field} placeholder="Description" />
-            )}
-          />
-        </FormItem>
-      </FormRow>
-      <FormRow>
-        <FormItem isCode>
-          <label>Expression</label>
-          <Field
-            name="expression"
-            render={({ field }) => (
-              <Input.TextArea {...field} placeholder="Expression" />
-            )}
-          />
-        </FormItem>
-      </FormRow>
-      <FormRow>
-        <FormItem>
-          <label>Notes</label>
-          <Field
-            name="notes"
-            render={({ field }) => (
-              <Input.TextArea {...field} placeholder="Notes" />
-            )}
-          />
-        </FormItem>
-      </FormRow>
-      <FormRow>
-        <FormItem>
-          <Field
-            name="locked"
-            render={({ field }) => {
-              return (
-                <Checkbox
+    <React.Fragment>
+      <Form>
+        <FormRow flexDirection="row">
+          <FormItem width="400px">
+            <label>Group:</label>
+            <Field
+              name="group"
+              render={({ field }) => (
+                <Select
                   {...field}
-                  style={{ fontWeight: "bold" }}
-                  checked={field.value}
-                  onChange={e => setFieldValue("locked", e.target.checked)}
+                  onChange={value => setFieldValue("group", value)}
+                  // Renders an extra "option" to add a new group
+                  dropdownRender={menu => (
+                    <div>
+                      {menu}
+                      <Divider style={{ margin: "4px 0" }} />
+                      <div
+                        style={{ padding: "4px 8px", cursor: "pointer" }}
+                        onMouseDown={e => e.preventDefault()}
+                        onClick={() => setIsVisibleModal(true)}
+                      >
+                        <Icon type="plus" />
+                        {` New Group`}
+                      </div>
+                    </div>
+                  )}
                 >
-                  Lock?
-                </Checkbox>
-              );
-            }}
-          />
-        </FormItem>
-      </FormRow>
-      <ButtonRow>
-        <Button type="primary" disabled={isSubmitting} htmlType="submit">
-          Add Variable
-        </Button>
-        <Spacer />
-        <Button
-          disabled={isSubmitting}
-          onClick={() => history.push(`/${selectedQVW}/variableeditor`)}
+                  {groups.map(group => (
+                    <Select.Option key={group} value={group}>
+                      {group}
+                    </Select.Option>
+                  ))}
+                </Select>
+              )}
+            />
+            <ErrorDiv>
+              {errors.group && touched.group && <p>{errors.group}</p>}
+            </ErrorDiv>
+          </FormItem>
+          <FormItem>
+            <label>Variable Name:</label>
+            <Field
+              name="name"
+              render={({ field }) => <Input {...field} placeholder="Name" />}
+            />
+            <ErrorDiv>
+              {errors.name && touched.name && <p>{errors.name}</p>}
+            </ErrorDiv>
+          </FormItem>
+        </FormRow>
+
+        <FormRow>
+          <FormItem>
+            <label>Description</label>
+            <Field
+              name="description"
+              render={({ field }) => (
+                <Input.TextArea {...field} placeholder="Description" />
+              )}
+            />
+          </FormItem>
+        </FormRow>
+        <FormRow>
+          <FormItem isCode>
+            <label>Expression</label>
+            <Field
+              name="expression"
+              render={({ field }) => (
+                <Input.TextArea {...field} placeholder="Expression" />
+              )}
+            />
+          </FormItem>
+        </FormRow>
+        <FormRow>
+          <FormItem>
+            <label>Notes</label>
+            <Field
+              name="notes"
+              render={({ field }) => (
+                <Input.TextArea {...field} placeholder="Notes" />
+              )}
+            />
+          </FormItem>
+        </FormRow>
+        <FormRow>
+          <FormItem>
+            <Field
+              name="locked"
+              render={({ field }) => {
+                return (
+                  <Checkbox
+                    {...field}
+                    style={{ fontWeight: "bold" }}
+                    checked={field.value}
+                    onChange={e => setFieldValue("locked", e.target.checked)}
+                  >
+                    Lock?
+                  </Checkbox>
+                );
+              }}
+            />
+          </FormItem>
+        </FormRow>
+        <ButtonRow>
+          <Button type="primary" disabled={isSubmitting} htmlType="submit">
+            Add Variable
+          </Button>
+          <Spacer />
+          <Button
+            disabled={isSubmitting}
+            onClick={() => history.push(`/${selectedQVW}/variableeditor`)}
+          >
+            Close
+          </Button>
+        </ButtonRow>
+        <Modal
+          visible={isVisibleModal}
+          title="Enter New Group Name"
+          onOk={addGroup}
+          onCancel={() => setIsVisibleModal(false)}
         >
-          Close
-        </Button>
-      </ButtonRow>
-      <Modal
-        visible={isVisibleModal}
-        title="Enter New Group Name"
-        onOk={addGroup}
-        onCancel={() => setIsVisibleModal(false)}
-      >
-        <Input
-          autoFocus
-          value={newGroup}
-          onChange={e => setNewGroup(e.target.value)}
-          onPressEnter={addGroup}
-        />
-      </Modal>
-    </Form>
+          <Input
+            autoFocus
+            value={newGroup}
+            onChange={e => setNewGroup(e.target.value)}
+            onPressEnter={addGroup}
+          />
+        </Modal>
+      </Form>
+    </React.Fragment>
   );
 };
 

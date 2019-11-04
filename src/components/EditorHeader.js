@@ -8,6 +8,7 @@ import {
   mainHeaderBGColor
 } from "../styles/standardStyles";
 import VariableHeaderButtons from "./VariableEditor/VariableHeaderButtons";
+import GroupHeaderButtons from "./GroupEditor/GroupHeaderButtons";
 
 const Wrapper = styled.div`
   display: flex;
@@ -60,12 +61,14 @@ const EditorHeader = ({ history, location, match }) => {
   // let groupedVars = useSelector(state =>
   //   selectQVWVariablesGrouped(state, selectedQVW)
   // );
-  console.log("location", location.pathname);
-  let activeEditor = location.pathname.split("/").includes("variableeditor")
-    ? "Variable Editor"
+  console.log("EditorHeader-Location", location.pathname);
+  let [activeEditor, activeEditorTitle] = location.pathname
+    .split("/")
+    .includes("variableeditor")
+    ? ["var", "Variable Editor"]
     : location.pathname.split("/").includes("groupeditor")
-    ? "Group Editor"
-    : "";
+    ? ["group", "Group Editor"]
+    : ["", ""];
 
   const openVariableEditor = () => {
     history.push(`/${selectedQVW}/variableeditor`);
@@ -94,8 +97,9 @@ const EditorHeader = ({ history, location, match }) => {
         }}
       />
 
-      <Title>{`${selectedQVW} ${activeEditor}`}</Title>
-      <VariableHeaderButtons />
+      <Title>{`${selectedQVW} ${activeEditorTitle}`}</Title>
+      {activeEditor === "var" && <VariableHeaderButtons />}
+      {activeEditor === "group" && <GroupHeaderButtons />}
     </Wrapper>
   );
 };

@@ -45,7 +45,6 @@ function VariableMain(props) {
   // let [isEditing, setIsEditing] = useState(false);
   // let [isDirty, setIsDirty] = useState(false);
 
-  let dispatch = useDispatch();
   // Get variables from store in format { group1: [array of variable object], group2: [...], ...}
   let groupedVars = useSelector(state =>
     selectQVWVariablesGrouped(state, selectedQVW)

@@ -7,6 +7,7 @@ import { Button, Input, Select, Checkbox } from "antd";
 
 import { useVariableStateSetters } from "../context/variableStateContext";
 import { updateVariable, selectQVWGroups } from "../../store/variableEditor";
+import { secondsTimeStampNow } from "../../dateHelpers";
 
 const Field = styled.div`
   display: flex;
