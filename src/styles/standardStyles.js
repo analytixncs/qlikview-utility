@@ -10,6 +10,8 @@ export const mainHeaderBGColor = "#64b5f6";
 export const mainHeaderFontColor = "black";
 export const filterBarBGColor = "lightgray";
 export const filterBarFontColor = "black";
+export const editorBGColor = "#e3f2fd";
+export const cardBGColor = "#e3f2fd";
 
 // -- DIMENSIONS --
 export const editorHeaderHeight = "50px";

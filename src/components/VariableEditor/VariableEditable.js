@@ -7,7 +7,6 @@ import { Button, Input, Select, Checkbox } from "antd";
 
 import { useVariableStateSetters } from "../context/variableStateContext";
 import { updateVariable, selectQVWGroups } from "../../store/variableEditor";
-import { secondsTimeStampNow } from "../../dateHelpers";
 
 const Field = styled.div`
   display: flex;
@@ -62,11 +61,11 @@ function VariableEditable({ variable }) {
     description,
     expression,
     locked,
-    notes,
-    createDate,
-    createUser,
-    modifyDate,
-    modifyUser
+    notes
+    // createDate,
+    // createUser,
+    // modifyDate,
+    // modifyUser
   } = variable;
 
   let { setViewingId, setIsEditing, setIsDirty } = useVariableStateSetters();
@@ -97,7 +96,7 @@ function VariableEditable({ variable }) {
     return () => {
       setIsDirty(false);
     };
-  }, []);
+  }, [setIsDirty]);
 
   const onSaveRecord = () => {
     let newVarRecord = {

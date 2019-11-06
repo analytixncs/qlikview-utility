@@ -6,7 +6,7 @@ import { DragDropContext } from "react-beautiful-dnd";
 import styled from "styled-components";
 import {
   editorHeaderHeight,
-  variableSearchHeight,
+  editorBGColor,
   variableGroupTopMargin,
   Spacer,
   contentBgColor
@@ -22,7 +22,7 @@ const VarExportWrapper = styled.div`
   margin: calc(${editorHeaderHeight} + ${variableGroupTopMargin}) 25px;
   border: 1px solid #abbfcf;
   box-shadow: 3px 3px 9px -2px #000000;
-  background: aliceblue;
+  background: ${editorBGColor};
 `;
 
 const TitleWrapper = styled.div`

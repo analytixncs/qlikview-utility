@@ -1,9 +1,11 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { useHistory } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 import styled from "styled-components";
 
-import { editorHeaderHeight } from "../../styles/standardStyles";
+import { editorHeaderHeight, cardBGColor } from "../../styles/standardStyles";
+import GroupCard from "./GroupCard";
 
 const Wrapper = styled.div`
   display: flex;
@@ -11,15 +13,31 @@ const Wrapper = styled.div`
   margin-top: ${editorHeaderHeight};
 `;
 
-function GroupMain(props) {
-  console.log("GroupMain", props);
+const GroupWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 10px;
+`;
+
+function GroupMain() {
   const history = useHistory();
+  const { selectedQVW } = useParams();
+  const groupRecords = useSelector(state =>
+    state.groupEditor.groups.filter(group => group.application === selectedQVW)
+  );
+  console.log("GroupMain", groupRecords);
   return (
     <Wrapper>
       <h1>Group Editor Main</h1>
       <div>
         <h2>In Development</h2>
-        <button onClick={() => history.push("/")}>Home</button>
+        <GroupWrapper>
+          {groupRecords.map(groupRecord => {
+            return <GroupCard key={groupRecord.id} groupRecord={groupRecord} />;
+          })}
+        </GroupWrapper>
       </div>
     </Wrapper>
   );

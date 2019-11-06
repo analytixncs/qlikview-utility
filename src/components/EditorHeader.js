@@ -85,9 +85,9 @@ const EditorHeader = ({ history, location, match }) => {
   return (
     <Wrapper onClick={() => setMenuOpen(false)}>
       <Menu isOpen={menuOpen}>
+        <Editor onClick={openSelectQVW}>Select QVW</Editor>
         <Editor onClick={openVariableEditor}>Variable Editor</Editor>
         <Editor onClick={openGroupEditor}>Group Editor</Editor>
-        <Editor onClick={openSelectQVW}>Select QVW</Editor>
       </Menu>
       <Button
         icon="menu"

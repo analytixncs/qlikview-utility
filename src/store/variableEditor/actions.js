@@ -17,6 +17,10 @@ import uuidv4 from "uuid/v4";
  */
 function loadVariables(application) {
   return async dispatch => {
+    dispatch({
+      type: types.LOAD_VARIABLES_WORKING,
+      payload: { status: true }
+    });
     let qvVariables = await getQVVariables(application);
     dispatch({
       type: types.LOAD_VARIABLES,
@@ -98,13 +102,6 @@ function setGroupFilter(group) {
   return { type: types.VAR_SET_GROUP_FILTER, payload: group };
 }
 
-function setLoadVariablesWorking() {
-  return {
-    type: types.LOAD_VARIABLES_WORKING,
-    payload: { status: true }
-  };
-}
-
 function clearVariables() {
   return { type: types.CLEAR_VARIABLES };
 }
@@ -112,7 +109,6 @@ export {
   loadVariables,
   setSearchTerm,
   setGroupFilter,
-  setLoadVariablesWorking,
   clearVariables,
   updateVariable,
   addVariable,

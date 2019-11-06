@@ -7,7 +7,8 @@ import styled from "styled-components";
 import {
   editorHeaderHeight,
   variableSearchHeight,
-  variableGroupTopMargin
+  variableGroupTopMargin,
+  editorBGColor
 } from "../../styles/standardStyles";
 
 import { selectQVWVariablesGrouped } from "../../store/variableEditor";
@@ -28,7 +29,7 @@ const VarListWrapper = styled.div`
 const GroupWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  background-color: #e3f2fd;
+  background-color: ${editorBGColor};
   border: 1px solid gray;
   border-radius: 10px;
   margin-top: ${variableGroupTopMargin};

@@ -1,33 +1,36 @@
-import { getQVGroups } from "../../dataAccess/applicationDataAccess";
+import {
+  getQVGroups,
+  updateQVGroup
+} from "../../dataAccess/applicationDataAccess";
 import * as types from "./types";
 
-function loadGroups(application) {
+function loadGroups() {
   return async dispatch => {
-    let qvGroups = await getQVGroups(application);
+    dispatch({ type: types.LOAD_GROUPS_WORKING, payload: true });
+    let qvGroups = await getQVGroups();
     dispatch({
       type: types.LOAD_GROUPS,
-      payload: { qvGroups, application }
+      payload: { qvGroups }
     });
     //set working status to false
     dispatch({ type: types.LOAD_GROUPS_WORKING, payload: false });
   };
-  // --- OLD PROMISE WAY BELOW ---
-  // return dispatch => {
-  //   let request = getQVWNames();
-  //   request.then(applicationNames => {
-  //     dispatch({ type: LOAD_QVW_NAMES, applicationNames });
-  //   });
-  // };
 }
 
-function setLoadGroupsWorking() {
-  return {
-    type: types.LOAD_GROUPS_WORKING,
-    payload: { status: true }
+function updateGroup(id, newGroupData) {
+  console.log("inupdate group", id, newGroupData);
+  return async dispatch => {
+    let qvGroups = await updateQVGroup(id, newGroupData);
+    console.log("group data return", qvGroups);
+    dispatch({
+      type: types.LOAD_GROUPS,
+      payload: { qvGroups }
+    });
   };
 }
+
 function clearGroups() {
   return { type: types.CLEAR_GROUPS };
 }
 
-export { loadGroups, setLoadGroupsWorking, clearGroups };
+export { loadGroups, updateGroup, clearGroups };
