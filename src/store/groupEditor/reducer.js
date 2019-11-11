@@ -21,6 +21,21 @@ const groupEditorReducer = (state = initialState, action) => {
         ...state,
         groups: []
       };
+    case types.POPULATE_GROUPS:
+      return {
+        ...state,
+        groups: action.payload
+      };
+    case types.LOAD_QVW_FIELDS:
+      return {
+        ...state,
+        qvwFields: action.payload
+      };
+    case types.CLEAR_QVW_FIELDS:
+      return {
+        ...state,
+        qvwFields: undefined
+      };
     default:
       return state;
   }

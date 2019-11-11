@@ -4,8 +4,9 @@ import { useDispatch } from "react-redux";
 import { Button } from "antd";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import { cardBGColor } from "../../styles/standardStyles";
-import { updateGroup } from "../../store/groupEditor";
+import { updateGroup, deleteGroup } from "../../store/groupEditor";
 import GroupField from "./GroupField";
+import GroupFields from "./GroupFields";
 import { updateVariable } from "../../store/variableEditor";
 
 const Wrapper = styled.div`
@@ -44,6 +45,13 @@ const Fields = styled.div`
   margin: 5px;
 `;
 
+const onAddGroupField = (dispatch, id, groupRecord, newFieldObj) => {
+  //let { fieldName, fieldLabel }  = newFieldObj;
+  let fields = [...groupRecord.fields, newFieldObj];
+  let newGroupRecord = { ...groupRecord, fields };
+  dispatch(updateGroup(id, newGroupRecord));
+};
+
 const GroupCard = ({ groupRecord }) => {
   let { id, fields } = groupRecord;
   let dispatch = useDispatch();
@@ -71,7 +79,7 @@ const GroupCard = ({ groupRecord }) => {
     <Wrapper>
       <TitleWrapper>
         <Title>{groupRecord.groupName} </Title>
-        <CloseButton icon="close" />
+        <CloseButton icon="close" onClick={() => dispatch(deleteGroup(id))} />
       </TitleWrapper>
       <div>
         <span>Type:</span>
@@ -79,20 +87,25 @@ const GroupCard = ({ groupRecord }) => {
       </div>
 
       <DragDropContext onDragEnd={onDragEnd}>
-        <div>Fields</div>
         <Droppable droppableId={groupRecord.id}>
           {provided => {
             return (
-              <Fields ref={provided.innerRef} {...provided.droppableProps}>
-                {fields.map((field, idx) => (
-                  <GroupField
-                    key={field.fieldName + idx}
-                    field={field}
-                    index={idx}
-                  />
-                ))}
-                {provided.placeholder}
-              </Fields>
+              <GroupFields
+                onAddGroupField={fieldObj =>
+                  onAddGroupField(dispatch, id, groupRecord, fieldObj)
+                }
+              >
+                <Fields ref={provided.innerRef} {...provided.droppableProps}>
+                  {fields.map((field, idx) => (
+                    <GroupField
+                      key={field.fieldName + idx}
+                      field={field}
+                      index={idx}
+                    />
+                  ))}
+                  {provided.placeholder}
+                </Fields>
+              </GroupFields>
             );
           }}
         </Droppable>

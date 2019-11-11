@@ -8,7 +8,7 @@ import VariableMain from "./VariableEditor/VariableMain";
 import VariableAddNew from "./VariableEditor/VariableAddNewFormik";
 import VariableExport from "./VariableEditor/VariableExport";
 import GroupEditor from "./GroupEditor/GroupMain";
-
+import GroupEditorAddNew from "./GroupEditor/GroupEditorAddNew";
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -34,6 +34,9 @@ const EditorContainer = props => {
         </Route>
         <Route path="/:selectedQVW/groupeditor/export">
           <GroupEditor />
+        </Route>
+        <Route path="/:selectedQVW/groupeditor/addnew">
+          <GroupEditorAddNew />
         </Route>
         <Route path="/:selectedQVW/groupeditor">
           <GroupEditor />

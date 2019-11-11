@@ -5,6 +5,7 @@ import {
   backupData
 } from "./nativeFileAccess";
 import uuidv4 from "uuid/v4";
+import _ from "lodash";
 import { secondsTimeStampNow, dateTimeFileFormatted } from "../dateHelpers";
 
 /**
@@ -157,7 +158,7 @@ async function updateQVGroup(id, updatedQVGroup) {
 async function insertQVGroup(newQVGroup) {
   // Load Group file
   let qvGroups = await getQVGroups();
-  qvGroups.push(newQVGroup);
+  qvGroups.unshift(newQVGroup);
   await writeQVFile("GROUP", qvGroups);
   return qvGroups;
 }
@@ -233,6 +234,25 @@ async function deleteQVWName(qvwId) {
 }
 
 //--------------------------------------
+//- QVW Fields
+//--------------------------------------
+
+/**
+ *
+ *
+ * @param {string} [qvwName=undefined] - QVW that we are editing currently
+ * @returns {array} - filtered list of field name objects from qvwfields.json
+ */
+async function getQVWFields(qvwName = undefined) {
+  let QVWFields = await readQVFile("QVWFIELDS");
+  if (qvwName) {
+    QVWFields = QVWFields.filter(field => field.application === qvwName);
+  }
+
+  return _.uniqBy(QVWFields, "field");
+}
+
+//--------------------------------------
 //- SETTINGS
 //--------------------------------------
 
@@ -261,5 +281,6 @@ export {
   deleteQVGroup,
   saveQVWName,
   deleteQVWName,
+  getQVWFields,
   getSettings
 };

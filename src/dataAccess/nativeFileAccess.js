@@ -30,6 +30,7 @@ const FILES = {
   VAR_FILE: "qvvariables.json",
   GROUP_FILE: "qvgroups.json",
   QVWNAMES_FILE: "qvwnames.json",
+  QVWFIELDS_FILE: "qvwfields.json",
   SETTINGS_FILE: "settings.json"
 };
 
