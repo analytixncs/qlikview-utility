@@ -25,7 +25,7 @@ function loadGroups() {
 
 function addGroup(newGroupObj) {
   return async dispatch => {
-    let qvGroups = insertQVGroup(newGroupObj);
+    let qvGroups = await insertQVGroup(newGroupObj);
     dispatch({ type: types.POPULATE_GROUPS, payload: qvGroups });
   };
 }
@@ -70,8 +70,8 @@ function clearGroups() {
  */
 function loadQVWFields(selectedQVW) {
   return async dispatch => {
-    let qvwfields = await getQVWFields(selectedQVW);
-    dispatch({ type: types.LOAD_QVW_FIELDS, payload: qvwfields });
+    let qvwFields = await getQVWFields(selectedQVW);
+    dispatch({ type: types.LOAD_QVW_FIELDS, payload: qvwFields });
   };
 }
 function clearQVWFields() {}

@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { Draggable } from "react-beautiful-dnd";
-import { Icon } from "antd";
+import { Button, Icon } from "antd";
 import handleimg from "../../images/drag_icon.png";
 
 const Wrapper = styled.div`
@@ -14,6 +14,7 @@ const Wrapper = styled.div`
 
 const FieldWrapper = styled.div`
   width: 100%;
+  cursor: default;
 `;
 const Handle = styled.div`
   width: 25px;
@@ -31,7 +32,20 @@ const Field = styled.div`
   background-color: white;
 `;
 
-const GroupField = ({ field, index }) => {
+const DeleteButton2 = styled(Button)`
+  width: 25px;
+`;
+const DeleteButton = styled.div`
+  width: 25px;
+  background-color: #ff4d4f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid black;
+  cursor: pointer;
+`;
+
+const GroupField = ({ field, index, onDeleteGroupField }) => {
   return (
     <Draggable draggableId={field.fieldName + index} index={index}>
       {provided => {
@@ -42,6 +56,9 @@ const GroupField = ({ field, index }) => {
               <Field>{field.fieldLabel}</Field>
               <Field>{field.fieldName}</Field>
             </FieldWrapper>
+            <DeleteButton onClick={() => onDeleteGroupField(index)}>
+              <Icon type="close" />
+            </DeleteButton>
           </Wrapper>
         );
       }}

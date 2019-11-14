@@ -36,6 +36,8 @@ const EditFieldModal = ({ show, onCloseModal, onAddGroupField }) => {
 
     //dispatch function for adding group field
     onAddGroupField({ fieldName, fieldLabel: fieldLabeltoSubmit });
+    setFieldLabel("");
+    setFieldName("");
     //close modal
     onCloseModal();
   };
@@ -71,6 +73,7 @@ const EditFieldModal = ({ show, onCloseModal, onAddGroupField }) => {
             showSearch
             style={{ width: "100%" }}
             placeholder="Choose Field"
+            value={fieldName}
             onChange={value => setFieldName(value)}
           >
             {qvwFields &&

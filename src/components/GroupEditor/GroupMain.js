@@ -39,7 +39,6 @@ function GroupMain() {
     <Wrapper>
       <h1>Group Editor Main</h1>
       <div>
-        <h2>In Development</h2>
         <GroupWrapper>
           {groupRecords.map(groupRecord => {
             return <GroupCard key={groupRecord.id} groupRecord={groupRecord} />;

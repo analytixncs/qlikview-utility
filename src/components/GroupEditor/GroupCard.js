@@ -7,7 +7,7 @@ import { cardBGColor } from "../../styles/standardStyles";
 import { updateGroup, deleteGroup } from "../../store/groupEditor";
 import GroupField from "./GroupField";
 import GroupFields from "./GroupFields";
-import { updateVariable } from "../../store/variableEditor";
+import FieldItem from "./FieldItem";
 
 const Wrapper = styled.div`
   border: 1px solid black;
@@ -45,9 +45,10 @@ const Fields = styled.div`
   margin: 5px;
 `;
 
-const onAddGroupField = (dispatch, id, groupRecord, newFieldObj) => {
+const onUpdateGroupFields = (dispatch, id, groupRecord, newFieldObj) => {
   //let { fieldName, fieldLabel }  = newFieldObj;
-  let fields = [...groupRecord.fields, newFieldObj];
+  let existingFields = groupRecord.fields || [];
+  let fields = [...existingFields, newFieldObj];
   let newGroupRecord = { ...groupRecord, fields };
   dispatch(updateGroup(id, newGroupRecord));
 };
@@ -55,6 +56,8 @@ const onAddGroupField = (dispatch, id, groupRecord, newFieldObj) => {
 const GroupCard = ({ groupRecord }) => {
   let { id, fields } = groupRecord;
   let dispatch = useDispatch();
+
+  //--------------------------------------
   const onDragEnd = result => {
     const { destination, source, draggableId } = result;
 
@@ -75,15 +78,56 @@ const GroupCard = ({ groupRecord }) => {
     // Update group via redux
     dispatch(updateGroup(id, newGroup));
   };
+
+  //--------------------------------------
+  const onDeleteGroupField = fieldIdx => {
+    let newFields = Array.from(fields);
+    newFields.splice(fieldIdx, 1);
+    let newGroupRecord = { ...groupRecord, fields: newFields };
+    dispatch(updateGroup(id, newGroupRecord));
+  };
+  //---------------------------------------
+  const updateGroupName = newGroupName => {
+    let newGroupRecord = { ...groupRecord, groupName: newGroupName };
+    dispatch(updateGroup(id, newGroupRecord));
+  };
+  //---------------------------------------
+  const updateGroupType = newGroupType => {
+    let newGroupRecord = { ...groupRecord, groupType: newGroupType };
+    dispatch(updateGroup(id, newGroupRecord));
+  };
+  //---------------------------------------
+  const updateGroupNotes = newGroupNotes => {
+    let newGroupRecord = { ...groupRecord, groupNotes: newGroupNotes };
+    dispatch(updateGroup(id, newGroupRecord));
+  };
+
   return (
     <Wrapper>
       <TitleWrapper>
-        <Title>{groupRecord.groupName} </Title>
+        <Title>
+          <FieldItem
+            fieldValue={groupRecord.groupName}
+            customClass="gc-title"
+            inputType="input"
+            onSave={newGroupName => updateGroupName(newGroupName)}
+          />
+        </Title>
         <CloseButton icon="close" onClick={() => dispatch(deleteGroup(id))} />
       </TitleWrapper>
       <div>
         <span>Type:</span>
-        {groupRecord.groupType}
+        <FieldItem
+          fieldValue={groupRecord.groupType}
+          customClass="gc-title"
+          showPickList
+          pickListValues={[
+            { label: "Cyclic", key: "Cyclic" },
+            { label: "Drill", key: "Drill" }
+          ]}
+          inputType="select"
+          onSave={newGroupType => updateGroupType(newGroupType)}
+        />
       </div>
 
       <DragDropContext onDragEnd={onDragEnd}>
@@ -92,17 +136,19 @@ const GroupCard = ({ groupRecord }) => {
             return (
               <GroupFields
                 onAddGroupField={fieldObj =>
-                  onAddGroupField(dispatch, id, groupRecord, fieldObj)
+                  onUpdateGroupFields(dispatch, id, groupRecord, fieldObj)
                 }
               >
                 <Fields ref={provided.innerRef} {...provided.droppableProps}>
-                  {fields.map((field, idx) => (
-                    <GroupField
-                      key={field.fieldName + idx}
-                      field={field}
-                      index={idx}
-                    />
-                  ))}
+                  {fields &&
+                    fields.map((field, idx) => (
+                      <GroupField
+                        key={field.fieldName + idx}
+                        field={field}
+                        index={idx}
+                        onDeleteGroupField={onDeleteGroupField}
+                      />
+                    ))}
                   {provided.placeholder}
                 </Fields>
               </GroupFields>
@@ -110,6 +156,15 @@ const GroupCard = ({ groupRecord }) => {
           }}
         </Droppable>
       </DragDropContext>
+      <div>
+        <FieldItem
+          fieldValue={groupRecord.groupNotes || "  "}
+          customClass="gc-title"
+          inputType="textarea"
+          placeholder="Group Notes"
+          onSave={newGroupNotes => updateGroupNotes(newGroupNotes)}
+        />
+      </div>
     </Wrapper>
   );
 };
