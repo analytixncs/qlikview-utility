@@ -202,7 +202,7 @@ class FieldItem extends React.Component {
   }
 }
 
-FieldItem.Proptypes = {
+FieldItem.proptypes = {
   fieldValue: PropTypes.string,
   showPickList: PropTypes.bool, //If true we will show the pickListValues as select options
   inputType: PropTypes.oneOf(["select", "input", "textarea"]),

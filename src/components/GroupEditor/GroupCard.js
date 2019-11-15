@@ -8,6 +8,7 @@ import { updateGroup, deleteGroup } from "../../store/groupEditor";
 import GroupField from "./GroupField";
 import GroupFields from "./GroupFields";
 import FieldItem from "./FieldItem";
+import FieldEditable from "./FieldEditable";
 
 const Wrapper = styled.div`
   border: 1px solid black;
@@ -128,6 +129,18 @@ const GroupCard = ({ groupRecord }) => {
           inputType="select"
           onSave={newGroupType => updateGroupType(newGroupType)}
         />
+        {/* --FIELD EDITABLE-- */}
+        <FieldEditable
+          passedFieldValue={groupRecord.groupType}
+          customClass="gc-title"
+          allowPickListSearch
+          pickListValues={[
+            { label: "Cyclic", key: "Cyclic" },
+            { label: "Drill", key: "Drill" }
+          ]}
+          inputType="select"
+          onSave={newGroupType => updateGroupType(newGroupType)}
+        />
       </div>
 
       <DragDropContext onDragEnd={onDragEnd}>
@@ -160,6 +173,12 @@ const GroupCard = ({ groupRecord }) => {
         <FieldItem
           fieldValue={groupRecord.groupNotes || "  "}
           customClass="gc-title"
+          inputType="textarea"
+          placeholder="Group Notes"
+          onSave={newGroupNotes => updateGroupNotes(newGroupNotes)}
+        />
+        <FieldEditable
+          passedFieldValue={groupRecord.groupNotes || "  "}
           inputType="textarea"
           placeholder="Group Notes"
           onSave={newGroupNotes => updateGroupNotes(newGroupNotes)}
