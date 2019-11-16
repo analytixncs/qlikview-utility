@@ -37,7 +37,7 @@ function updateGroup(id, newGroupObj) {
   console.log("inupdate group", id, newGroupObj);
   return async dispatch => {
     let qvGroups = await updateQVGroup(id, newGroupObj);
-    console.log("group data return", qvGroups);
+    // console.log("group data return", qvGroups);
     dispatch({
       type: types.LOAD_GROUPS,
       payload: { qvGroups }

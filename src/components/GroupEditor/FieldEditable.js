@@ -5,20 +5,27 @@ import PropTypes from "prop-types";
 import _ from "lodash";
 import uuid from "uuid";
 import { Select, Button, Input, Popconfirm } from "antd";
-// TODO: In Text/Input fields set cursor to end of text
+
 // TODO: Get Control/s working for Select controls
 // TODO: Deal with no onBlur on Select controls
-//Used for regular input and textarea input needs
+// TODO: Deal with border around static fields.  maybe prop to use border or not
+//       pass to styled component
+
+/**
+ * Used for regular input and textarea input needs
+ * the passed props.inRef is used in the main function's useEffect()
+ * to set the cursor to the end of the text.
+ */
 const CustomInput = props => {
-  //don't want to spread inputType or onHandleSave function to these components, getting rid of it.
-  // let newProps = _.omit(props, "inputType", "onHandleSave");
   let { inputProps } = props;
+
   if (props.inputType === "textarea") {
-    return <Input.TextArea autoFocus {...inputProps} />;
+    return <Input.TextArea autoFocus ref={props.inRef} {...inputProps} />;
   } else {
     return (
       <Input
         autoFocus
+        ref={props.inRef}
         {...inputProps}
         onKeyPress={e => {
           if (e.key === "Enter") {
@@ -32,11 +39,16 @@ const CustomInput = props => {
 };
 
 const StaticField = styled.div`
-  display: block;
+  display: inline-block;
   cursor: pointer;
   background-color: white;
   border: 1px solid gray;
   padding: 5px;
+  width: 100%;
+`;
+const InputWrapper = styled.div`
+  display: flex;
+  flex-wrap: nowrap;
 `;
 
 const FieldEditable = ({
@@ -52,7 +64,19 @@ const FieldEditable = ({
   let [availablePickListValues, setAvailablePickListValues] = useState(
     pickListValues || []
   );
+  let inRef = React.createRef();
 
+  React.useEffect(() => {
+    let myRef;
+    if (editing && inputType !== "select") {
+      myRef =
+        inputType === "textarea"
+          ? inRef.current.textAreaRef
+          : inRef.current.input;
+      myRef.focus();
+      myRef.setSelectionRange(fieldValue.length, fieldValue.length);
+    }
+  }, [inputType, editing]);
   const cancelEditing = () => {
     setEditing(false);
     setFieldValue(passedFieldValue);
@@ -100,6 +124,9 @@ const FieldEditable = ({
   );
 
   let editableJSX;
+  // ---------------------------
+  // - Build SELECT component -- inputType = "select"
+  // ---------------------------
   if (inputType === "select") {
     //Create Options tags from passed list
     const options = availablePickListValues.map(aField => (
@@ -108,7 +135,7 @@ const FieldEditable = ({
       </Select.Option>
     ));
     editableJSX = (
-      <React.Fragment>
+      <div onKeyDown={e => captureKey(e.key)} onKeyUp={e => keyUp(e.key)}>
         <Select
           mode="default"
           showSearch={allowPickListSearch}
@@ -127,29 +154,39 @@ const FieldEditable = ({
         </Select>
         <Button icon="save" onClick={handleSave} />
         <Button icon="close" onClick={cancelEditing} onBlur={cancelEditing} />
-      </React.Fragment>
+      </div>
     );
   } else {
-    // --------------- INPUT TYPE Either input OR textarea ----------------------
+    // ---------------------------
+    // - Build INPUT component -- either "input" OR "textarea"
+    // ---------------------------
+    // These are the props that we will spread on the tag
     let inputProps = {
       value: fieldValue,
-      onChange: e => setFieldValue(e.target.value)
+      onChange: e => setFieldValue(e.target.value),
+      ref: inRef
     };
     editableJSX = (
       <React.Fragment>
-        <div onKeyDown={e => captureKey(e.key)} onKeyUp={e => keyUp(e.key)}>
-          <CustomInput
-            inputProps={inputProps}
-            inputType={inputType}
-            onHandleSave={handleSave}
-          />
+        <InputWrapper>
+          <div
+            style={{ width: "100%" }}
+            onKeyDown={e => captureKey(e.key)}
+            onKeyUp={e => keyUp(e.key)}
+          >
+            <CustomInput
+              inputProps={inputProps}
+              inputType={inputType}
+              onHandleSave={handleSave}
+            />
+          </div>
           <Button icon="save" onMouseDown={handleSave} />
           <Button
             icon="close"
             onMouseDown={cancelEditing}
             onBlur={cancelEditing}
           />
-        </div>
+        </InputWrapper>
       </React.Fragment>
     );
   }

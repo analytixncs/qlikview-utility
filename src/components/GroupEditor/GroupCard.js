@@ -29,6 +29,7 @@ const TitleWrapper = styled.div`
 const Title = styled.div`
   font-size: 1.2rem;
   font-weight: bold;
+  width: 100%;
 `;
 
 const CloseButton = styled(Button)`
@@ -107,10 +108,16 @@ const GroupCard = ({ groupRecord }) => {
     <Wrapper>
       <TitleWrapper>
         <Title>
-          <FieldItem
+          {/* <FieldItem
             fieldValue={groupRecord.groupName}
             customClass="gc-title"
             inputType="input"
+            onSave={newGroupName => updateGroupName(newGroupName)}
+          /> */}
+          <FieldEditable
+            passedFieldValue={groupRecord.groupName || "  "}
+            inputType="input"
+            placeholder="Group Name"
             onSave={newGroupName => updateGroupName(newGroupName)}
           />
         </Title>
@@ -182,6 +189,12 @@ const GroupCard = ({ groupRecord }) => {
           inputType="textarea"
           placeholder="Group Notes"
           onSave={newGroupNotes => updateGroupNotes(newGroupNotes)}
+        />
+        <FieldEditable
+          passedFieldValue={groupRecord.groupName || "  "}
+          inputType="input"
+          placeholder="Group Name"
+          onSave={newGroupName => updateGroupName(newGroupName)}
         />
       </div>
     </Wrapper>
