@@ -108,12 +108,6 @@ const GroupCard = ({ groupRecord }) => {
     <Wrapper>
       <TitleWrapper>
         <Title>
-          {/* <FieldItem
-            fieldValue={groupRecord.groupName}
-            customClass="gc-title"
-            inputType="input"
-            onSave={newGroupName => updateGroupName(newGroupName)}
-          /> */}
           <FieldEditable
             passedFieldValue={groupRecord.groupName || "  "}
             inputType="input"
@@ -125,21 +119,9 @@ const GroupCard = ({ groupRecord }) => {
       </TitleWrapper>
       <div>
         <span>Type:</span>
-        <FieldItem
-          fieldValue={groupRecord.groupType}
-          customClass="gc-title"
-          showPickList
-          pickListValues={[
-            { label: "Cyclic", key: "Cyclic" },
-            { label: "Drill", key: "Drill" }
-          ]}
-          inputType="select"
-          onSave={newGroupType => updateGroupType(newGroupType)}
-        />
         {/* --FIELD EDITABLE-- */}
         <FieldEditable
           passedFieldValue={groupRecord.groupType}
-          customClass="gc-title"
           allowPickListSearch
           pickListValues={[
             { label: "Cyclic", key: "Cyclic" },
@@ -177,24 +159,11 @@ const GroupCard = ({ groupRecord }) => {
         </Droppable>
       </DragDropContext>
       <div>
-        <FieldItem
-          fieldValue={groupRecord.groupNotes || "  "}
-          customClass="gc-title"
-          inputType="textarea"
-          placeholder="Group Notes"
-          onSave={newGroupNotes => updateGroupNotes(newGroupNotes)}
-        />
         <FieldEditable
           passedFieldValue={groupRecord.groupNotes || "  "}
           inputType="textarea"
           placeholder="Group Notes"
           onSave={newGroupNotes => updateGroupNotes(newGroupNotes)}
-        />
-        <FieldEditable
-          passedFieldValue={groupRecord.groupName || "  "}
-          inputType="input"
-          placeholder="Group Name"
-          onSave={newGroupName => updateGroupName(newGroupName)}
         />
       </div>
     </Wrapper>

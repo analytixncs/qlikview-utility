@@ -6,6 +6,7 @@ import _ from "lodash";
 import uuid from "uuid";
 import { Select, Button, Input, Popconfirm } from "antd";
 
+import FocusManager from "../FocusManager";
 // TODO: Get Control/s working for Select controls
 // TODO: Deal with no onBlur on Select controls
 // TODO: Deal with border around static fields.  maybe prop to use border or not
@@ -46,7 +47,7 @@ const StaticField = styled.div`
   padding: 5px;
   width: 100%;
 `;
-const InputWrapper = styled.div`
+const InputWrapper = styled(FocusManager)`
   display: flex;
   flex-wrap: nowrap;
 `;
@@ -58,25 +59,43 @@ const FieldEditable = ({
   allowPickListSearch,
   onSave
 }) => {
+  let [inputRef, setInputRef] = useState();
   let [hotKey, setHotKey] = useState();
   let [editing, setEditing] = useState(false);
   let [fieldValue, setFieldValue] = useState(passedFieldValue);
   let [availablePickListValues, setAvailablePickListValues] = useState(
     pickListValues || []
   );
-  let inRef = React.createRef();
 
-  React.useEffect(() => {
-    let myRef;
-    if (editing && inputType !== "select") {
-      myRef =
-        inputType === "textarea"
-          ? inRef.current.textAreaRef
-          : inRef.current.input;
-      myRef.focus();
-      myRef.setSelectionRange(fieldValue.length, fieldValue.length);
+  // using React's "callback ref" functionality
+  // when passing this callback into the ref attribute on tag
+  // it will be called whenever the ref changes
+  // This allows us to store the actual node ref in state
+  // this state "inputRef" is then used in a useEffect function to
+  // set focus and selection range.
+  // Needed because component dynamically changes underlying component from static div
+  // to antd Input or TextArea when editing.  This is when we need to set focus and range
+  const inputCBRef = React.useCallback(node => {
+    if (node !== null) {
+      // Object you see when console logging is Input of TextArea, to find it must use node.constructor.name
+      // console.log("input ref node", node, node.constructor.name);
+      setInputRef(
+        node.input ? node.input : node.textAreaRef ? node.textAreaRef : null
+      );
     }
-  }, [inputType, editing]);
+  }, []);
+  // sets the focus and range (end of text) when inputRef is populated
+  React.useEffect(() => {
+    if (!inputRef) {
+      return;
+    }
+    inputRef.focus();
+    inputRef.setSelectionRange(
+      passedFieldValue.length,
+      passedFieldValue.length
+    );
+  }, [inputRef, passedFieldValue.length]);
+
   const cancelEditing = () => {
     setEditing(false);
     setFieldValue(passedFieldValue);
@@ -100,14 +119,12 @@ const FieldEditable = ({
   // };
 
   const captureKey = key => {
-    console.log("captureky", hotKey);
     if (key === "Control") {
       setHotKey(key);
       return;
     }
     if (hotKey === "Control") {
       if (hotKey + key === "Controls") {
-        console.log("we have a Controls");
         handleSave();
       }
       setHotKey(undefined);
@@ -135,26 +152,28 @@ const FieldEditable = ({
       </Select.Option>
     ));
     editableJSX = (
-      <div onKeyDown={e => captureKey(e.key)} onKeyUp={e => keyUp(e.key)}>
-        <Select
-          mode="default"
-          showSearch={allowPickListSearch}
-          autoFocus
-          labelInValue
-          value={{ key: fieldValue }}
-          style={{ width: "100%" }}
-          notFoundContent=""
-          defaultActiveFirstOption={false}
-          filterOption={allowPickListSearch} //handles the searching of the options for us
-          // onBlur={() => cancelEditing()}
-          dropdownMatchSelectWidth={false}
-          onChange={value => setFieldValue(value.key)}
-        >
-          {options}
-        </Select>
-        <Button icon="save" onClick={handleSave} />
-        <Button icon="close" onClick={cancelEditing} onBlur={cancelEditing} />
-      </div>
+      <FocusManager handleBlur={cancelEditing}>
+        <div onKeyDown={e => captureKey(e.key)} onKeyUp={e => keyUp(e.key)}>
+          <Select
+            mode="default"
+            showSearch={allowPickListSearch}
+            autoFocus
+            labelInValue
+            value={{ key: fieldValue }}
+            style={{ width: "100%" }}
+            notFoundContent=""
+            defaultActiveFirstOption={false}
+            filterOption={allowPickListSearch} //handles the searching of the options for us
+            // onBlur={() => cancelEditing()}
+            dropdownMatchSelectWidth={false}
+            onChange={value => setFieldValue(value.key)}
+          >
+            {options}
+          </Select>
+          <Button icon="save" onClick={handleSave} />
+          <Button icon="close" onClick={cancelEditing} />
+        </div>
+      </FocusManager>
     );
   } else {
     // ---------------------------
@@ -164,11 +183,12 @@ const FieldEditable = ({
     let inputProps = {
       value: fieldValue,
       onChange: e => setFieldValue(e.target.value),
-      ref: inRef
+      ref: inputCBRef //inRef
     };
     editableJSX = (
       <React.Fragment>
-        <InputWrapper>
+        {/* InputWrapper is styled component wrapping FocusManager */}
+        <InputWrapper handleBlur={cancelEditing}>
           <div
             style={{ width: "100%" }}
             onKeyDown={e => captureKey(e.key)}
@@ -181,11 +201,7 @@ const FieldEditable = ({
             />
           </div>
           <Button icon="save" onMouseDown={handleSave} />
-          <Button
-            icon="close"
-            onMouseDown={cancelEditing}
-            onBlur={cancelEditing}
-          />
+          <Button icon="close" onMouseDown={cancelEditing} />
         </InputWrapper>
       </React.Fragment>
     );
