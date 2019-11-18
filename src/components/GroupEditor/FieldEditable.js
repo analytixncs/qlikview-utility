@@ -39,24 +39,34 @@ const CustomInput = props => {
   }
 };
 
+//Wraps final output whether Static block or Editable Input/Textarea/Select
+const EditableWrapper = styled.div`
+  /* margin: ${props => (props.editing ? "0" : "5px")}; */
+`;
+
 const StaticField = styled.div`
   display: inline-block;
   cursor: pointer;
   background-color: white;
-  border: 1px solid gray;
+  color: ${props => (props.isEmpty ? "#C6C6C6" : "")};
+  border: ${props => (props.borderStyle ? props.borderStyle : "none")};
   padding: 5px;
   width: 100%;
 `;
-const InputWrapper = styled(FocusManager)`
+const InputWrapper = styled.div`
   display: flex;
   flex-wrap: nowrap;
+  border: 2px dashed red;
+  padding: 1px;
 `;
 
 const FieldEditable = ({
   passedFieldValue,
   inputType,
+  placeholder,
   pickListValues,
   allowPickListSearch,
+  borderStyle,
   onSave
 }) => {
   let [inputRef, setInputRef] = useState();
@@ -64,9 +74,9 @@ const FieldEditable = ({
   let [editing, setEditing] = useState(false);
   let [fieldValue, setFieldValue] = useState(passedFieldValue);
   let [availablePickListValues, setAvailablePickListValues] = useState(
-    pickListValues || []
+    pickListValues
   );
-
+  console.log("available", pickListValues, availablePickListValues);
   // using React's "callback ref" functionality
   // when passing this callback into the ref attribute on tag
   // it will be called whenever the ref changes
@@ -135,8 +145,12 @@ const FieldEditable = ({
   };
   // Static (Non-Editable) field JSX
   let fieldJSX = (
-    <StaticField onClick={() => setEditing(true)}>
-      {passedFieldValue}
+    <StaticField
+      isEmpty={!passedFieldValue}
+      borderStyle={borderStyle}
+      onClick={() => setEditing(true)}
+    >
+      {passedFieldValue || placeholder}
     </StaticField>
   );
 
@@ -146,14 +160,19 @@ const FieldEditable = ({
   // ---------------------------
   if (inputType === "select") {
     //Create Options tags from passed list
-    const options = availablePickListValues.map(aField => (
-      <Select.Option key={aField.key} value={aField.key}>
-        {aField.label}
-      </Select.Option>
-    ));
+    const options =
+      availablePickListValues &&
+      availablePickListValues.map(aField => (
+        <Select.Option key={aField.key} value={aField.key}>
+          {aField.label}
+        </Select.Option>
+      ));
     editableJSX = (
       <FocusManager handleBlur={cancelEditing}>
-        <div onKeyDown={e => captureKey(e.key)} onKeyUp={e => keyUp(e.key)}>
+        <InputWrapper
+          onKeyDown={e => captureKey(e.key)}
+          onKeyUp={e => keyUp(e.key)}
+        >
           <Select
             mode="default"
             showSearch={allowPickListSearch}
@@ -172,7 +191,7 @@ const FieldEditable = ({
           </Select>
           <Button icon="save" onClick={handleSave} />
           <Button icon="close" onClick={cancelEditing} />
-        </div>
+        </InputWrapper>
       </FocusManager>
     );
   } else {
@@ -183,12 +202,12 @@ const FieldEditable = ({
     let inputProps = {
       value: fieldValue,
       onChange: e => setFieldValue(e.target.value),
+      placeholder: placeholder,
       ref: inputCBRef //inRef
     };
     editableJSX = (
-      <React.Fragment>
-        {/* InputWrapper is styled component wrapping FocusManager */}
-        <InputWrapper handleBlur={cancelEditing}>
+      <FocusManager handleBlur={cancelEditing}>
+        <InputWrapper>
           <div
             style={{ width: "100%" }}
             onKeyDown={e => captureKey(e.key)}
@@ -200,14 +219,14 @@ const FieldEditable = ({
               onHandleSave={handleSave}
             />
           </div>
-          <Button icon="save" onMouseDown={handleSave} />
-          <Button icon="close" onMouseDown={cancelEditing} />
+          <Button icon="save" onClick={handleSave} />
+          <Button icon="close" onClick={cancelEditing} />
         </InputWrapper>
-      </React.Fragment>
+      </FocusManager>
     );
   }
 
-  return <div>{editing ? editableJSX : fieldJSX}</div>;
+  return <React.Fragment>{editing ? editableJSX : fieldJSX}</React.Fragment>;
 };
 
 export default FieldEditable;
@@ -219,6 +238,8 @@ FieldEditable.propTypes = {
   passedFieldValue: PropTypes.string,
   // inputType either "select", "input", "textarea"
   inputType: PropTypes.oneOf(["select", "input", "textarea"]),
+  // Placeholder for give editable field
+  placeholder: PropTypes.string,
   // if inputType is "select", this will be the values used to display in the dropdown list
   // must be passed as an array of objects [{label, key}, ...]
   pickListValues: PropTypes.arrayOf(
@@ -229,6 +250,8 @@ FieldEditable.propTypes = {
   ),
   // Make searchable select component
   allowPickListSearch: PropTypes.bool,
+  // css border style to apply ex: 1px solid gray or don't send prop for no border
+  borderStyle: PropTypes.string,
   // Function to be called when editable field is saved
   onSave: PropTypes.func
 };

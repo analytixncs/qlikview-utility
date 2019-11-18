@@ -9,15 +9,19 @@ const Wrapper = styled.div`
   flex-direction: column;
   margin: 5px;
   border: 1px solid black;
+  padding: 5px 0 5px 5px;
+  background-color: whitesmoke;
 `;
 const AddButton = styled(Button)`
   width: 150px;
+  align-self: flex-end;
+  margin-right: 5px;
+  margin-bottom: 5px;
 `;
 const GroupFields = props => {
   let [showAddField, setShowAddField] = useState(false);
   return (
     <Wrapper>
-      <h3>Fields</h3>
       {props.children}
       <AddButton
         icon="plus"

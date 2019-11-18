@@ -1,8 +1,11 @@
 import React from "react";
 import styled from "styled-components";
 import { Draggable } from "react-beautiful-dnd";
+import { useSelector } from "react-redux";
 import { Button, Icon } from "antd";
+
 import handleimg from "../../images/drag_icon.png";
+import FieldEditable from "./FieldEditable";
 
 const Wrapper = styled.div`
   border: 1px solid lightgray;
@@ -32,9 +35,6 @@ const Field = styled.div`
   background-color: white;
 `;
 
-const DeleteButton2 = styled(Button)`
-  width: 25px;
-`;
 const DeleteButton = styled.div`
   width: 25px;
   background-color: #ff4d4f;
@@ -45,7 +45,20 @@ const DeleteButton = styled.div`
   cursor: pointer;
 `;
 
-const GroupField = ({ field, index, onDeleteGroupField }) => {
+const GroupField = ({
+  field,
+  index,
+  onDeleteGroupField,
+  onUpdateGroupFieldName,
+  onUpdateGroupFieldLabel
+}) => {
+  let qvwFields = useSelector(state => state.groupEditor.qvwFields);
+  let formattedQVWFields =
+    qvwFields &&
+    qvwFields.map(field => ({
+      label: field.field,
+      key: field.field
+    }));
   return (
     <Draggable draggableId={field.fieldName + index} index={index}>
       {provided => {
@@ -54,7 +67,27 @@ const GroupField = ({ field, index, onDeleteGroupField }) => {
             <Handle {...provided.dragHandleProps}></Handle>
             <FieldWrapper>
               <Field>{field.fieldLabel}</Field>
+              <FieldEditable
+                passedFieldValue={field.fieldLabel}
+                inputType="input"
+                placeholder="Field Label"
+                borderStyle="1px solid gray"
+                onSave={newFieldLabel =>
+                  onUpdateGroupFieldLabel(index, newFieldLabel)
+                }
+              />
               <Field>{field.fieldName}</Field>
+              <FieldEditable
+                passedFieldValue={field.fieldName}
+                inputType="select"
+                placeholder="Field Name"
+                borderStyle="1px solid gray"
+                allowPickListSearch
+                pickListValues={formattedQVWFields}
+                onSave={newFieldName =>
+                  onUpdateGroupFieldName(index, newFieldName)
+                }
+              />
             </FieldWrapper>
             <DeleteButton onClick={() => onDeleteGroupField(index)}>
               <Icon type="close" />
