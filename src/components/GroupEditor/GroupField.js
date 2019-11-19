@@ -66,7 +66,6 @@ const GroupField = ({
           <Wrapper {...provided.draggableProps} ref={provided.innerRef}>
             <Handle {...provided.dragHandleProps}></Handle>
             <FieldWrapper>
-              <Field>{field.fieldLabel}</Field>
               <FieldEditable
                 passedFieldValue={field.fieldLabel}
                 inputType="input"
@@ -76,7 +75,6 @@ const GroupField = ({
                   onUpdateGroupFieldLabel(index, newFieldLabel)
                 }
               />
-              <Field>{field.fieldName}</Field>
               <FieldEditable
                 passedFieldValue={field.fieldName}
                 inputType="select"

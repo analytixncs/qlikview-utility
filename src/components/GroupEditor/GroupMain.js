@@ -29,7 +29,6 @@ function GroupMain() {
   const groupRecords = useSelector(state =>
     state.groupEditor.groups.filter(group => group.application === selectedQVW)
   );
-  console.log("GroupMain", groupRecords);
   // Load application fields from JSON file
   useEffect(() => {
     dispatch(loadQVWFields(selectedQVW));

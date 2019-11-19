@@ -15,6 +15,7 @@ const Wrapper = styled.div`
   background-color: ${cardBGColor};
   margin: 10px;
   width: 350px;
+  padding-bottom: 10px;
 `;
 const TitleWrapper = styled.div`
   display: flex;

@@ -7888,5 +7888,25 @@
     "application": "SalesFlash",
     "table": "SIC",
     "field": "SICDescription"
+  },
+  {
+    "application": "QVD_ALL",
+    "table": "SIC",
+    "field": "SICDescription"
+  },
+  {
+    "application": "QVD_ALL",
+    "table": "SIC",
+    "field": "SIC"
+  },
+  {
+    "application": "QVD_ALL",
+    "table": "SIC",
+    "field": "ProductName"
+  },
+  {
+    "application": "QVD_ALL",
+    "table": "SIC",
+    "field": "PlacementName"
   }
 ]

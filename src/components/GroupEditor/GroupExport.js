@@ -14,11 +14,11 @@ import {
 
 import { writeXMLData } from "../../dataAccess/nativeFileAccess";
 import { getSettings } from "../../dataAccess/applicationDataAccess";
-import VariableExportFields from "./VariableExportFields";
+import VariableExportFields from "../VariableEditor/VariableExportFields";
 
 let myStorage = window.localStorage;
 
-const VarExportWrapper = styled.div`
+const GroupExportWrapper = styled.div`
   margin: calc(${editorHeaderHeight} + ${variableGroupTopMargin}) 25px;
   border: 1px solid #abbfcf;
   box-shadow: 3px 3px 9px -2px #000000;
@@ -82,7 +82,7 @@ const ButtonWrapper = styled.div`
   width: 200px;
 `;
 
-const VariableExport = props => {
+const GroupExport = props => {
   let history = useHistory();
   let { selectedQVW } = useParams();
   let [status, setStatus] = React.useState({
@@ -169,12 +169,12 @@ const VariableExport = props => {
     message.error("Field Order and checked state deleted!", 2);
   };
   return (
-    <VarExportWrapper>
+    <GroupExportWrapper>
       <TitleWrapper>
-        <Title>{`Export ${selectedQVW} Variables`} </Title>
+        <Title>{`Export ${selectedQVW} Groups`} </Title>
         <CloseButton
           icon="close"
-          onClick={() => history.push(`/${selectedQVW}/variableeditor`)}
+          onClick={() => history.push(`/${selectedQVW}/groupeditor`)}
         />
       </TitleWrapper>
       <ExportBody>
@@ -231,8 +231,8 @@ const VariableExport = props => {
           />
         )}
       </ExportBody>
-    </VarExportWrapper>
+    </GroupExportWrapper>
   );
 };
 
-export default VariableExport;
+export default GroupExport;

@@ -73,10 +73,7 @@ const FieldEditable = ({
   let [hotKey, setHotKey] = useState();
   let [editing, setEditing] = useState(false);
   let [fieldValue, setFieldValue] = useState(passedFieldValue);
-  let [availablePickListValues, setAvailablePickListValues] = useState(
-    pickListValues
-  );
-  console.log("available", pickListValues, availablePickListValues);
+  let [availablePickListValues, setAvailablePickListValues] = useState([]);
   // using React's "callback ref" functionality
   // when passing this callback into the ref attribute on tag
   // it will be called whenever the ref changes
@@ -105,6 +102,12 @@ const FieldEditable = ({
       passedFieldValue.length
     );
   }, [inputRef, passedFieldValue.length]);
+
+  // Not sure why, but initing when declaring useState for pick list didn't work
+  // needed to run use effect to get values loaded
+  React.useEffect(() => {
+    setAvailablePickListValues(pickListValues);
+  }, [pickListValues]);
 
   const cancelEditing = () => {
     setEditing(false);

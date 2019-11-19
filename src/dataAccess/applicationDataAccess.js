@@ -229,7 +229,6 @@ async function deleteQVWName(qvwId) {
   // Remove QVW From qvwnames.json
   QVWNames = QVWNames.filter(qvw => qvw.id !== qvwId);
   await writeQVFile("QVWNAMES", QVWNames);
-  console.log("Returned QVWNames", QVWNames);
   return QVWNames;
 }
 

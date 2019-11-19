@@ -343,9 +343,7 @@ const FormikForm = withFormik({
     // the props that come in the FormikBag (destructured above) are the props from
     // the "calling" component.  This component can house the submit function
     //This is simulating our submit
-    console.log("values to sumbit", values);
     let errors = await props.submit(values);
-    console.log("after await call");
     if (errors) {
       setErrors(errors);
     } else {
