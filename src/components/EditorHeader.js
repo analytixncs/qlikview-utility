@@ -9,6 +9,7 @@ import {
 } from "../styles/standardStyles";
 import VariableHeaderButtons from "./VariableEditor/VariableHeaderButtons";
 import GroupHeaderButtons from "./GroupEditor/GroupHeaderButtons";
+import FocusManager from "./FocusManager";
 
 const Wrapper = styled.div`
   display: flex;
@@ -24,7 +25,7 @@ const Wrapper = styled.div`
   box-shadow: 0px 4px 5px -2px rgba(0, 0, 0, 0.57);
   border-bottom: 1px solid #0d47a1;
 `;
-const Editor = styled.a`
+const Editor = styled.div`
   display: block;
   padding: 5px;
   cursor: pointer;
@@ -84,18 +85,32 @@ const EditorHeader = ({ history, location, match }) => {
   };
   return (
     <Wrapper onClick={() => setMenuOpen(false)}>
-      <Menu isOpen={menuOpen}>
-        <Editor onClick={openSelectQVW}>Select QVW</Editor>
-        <Editor onClick={openVariableEditor}>Variable Editor</Editor>
-        <Editor onClick={openGroupEditor}>Group Editor</Editor>
-      </Menu>
-      <Button
-        icon="menu"
-        onClick={e => {
-          e.stopPropagation();
-          setMenuOpen(menuOpen => !menuOpen);
-        }}
-      />
+      <FocusManager handleBlur={() => setMenuOpen(false)}>
+        <Menu isOpen={menuOpen}>
+          <Editor onMouseDown={e => e.preventDefault()} onClick={openSelectQVW}>
+            Select QVW
+          </Editor>
+          <Editor
+            onMouseDown={e => e.preventDefault()}
+            onClick={openVariableEditor}
+          >
+            Variable Editor
+          </Editor>
+          <Editor
+            onMouseDown={e => e.preventDefault()}
+            onClick={openGroupEditor}
+          >
+            Group Editor
+          </Editor>
+        </Menu>
+        <Button
+          icon="menu"
+          onClick={e => {
+            e.stopPropagation();
+            setMenuOpen(menuOpen => !menuOpen);
+          }}
+        />
+      </FocusManager>
 
       <Title>{`${selectedQVW} ${activeEditorTitle}`}</Title>
       {activeEditor === "var" && <VariableHeaderButtons />}

@@ -10,7 +10,7 @@ import GroupFields from "./GroupFields";
 import FieldEditable from "./FieldEditable";
 
 const Wrapper = styled.div`
-  border: 1px solid black;
+  border: 2px solid black;
   border-radius: 5px;
   background-color: ${cardBGColor};
   margin: 10px;

@@ -212,11 +212,17 @@ async function writeQVFile(QVFileToWrite = undefined, data) {
   }
 }
 
-//Takes the appName and writes out an XML file of the groups data to the Spreadsheets directory
-//returns the applicationGroups data
-async function writeXMLData(appName, fieldsToExport) {
+/**
+ * Takes the appName and writes out an XML file of the groups data to the Spreadsheets directory
+ * returns the applicationGroups data
+ * @param {string} appName
+ * @param {array} fieldsToExport
+ * @param {string} exportType = either 'VAR' or 'GROUP'
+ * @returns
+ */
+async function writeXMLData(appName, fieldsToExport, exportType) {
   // Define default patha and filename
-  //!! TODO - Have a setting that stores default path for variables in production
+  //!!TODO - Have a setting that stores default path for variables in production
   let filedefaultPath =
     process.env.NODE_ENV === "development"
       ? path.join(remote.app.getAppPath(), "../Spreadsheets/", `${appName}.xml`)
@@ -227,7 +233,7 @@ async function writeXMLData(appName, fieldsToExport) {
         );
   // getCurrentWindow() makes the dialog a modal
   let filePath = remote.dialog.showSaveDialogSync(remote.getCurrentWindow(), {
-    title: "Save XML",
+    title: "Save XML or JSON",
     defaultPath: filedefaultPath,
     filters: [
       { name: "XML", extensions: ["xml"] },
@@ -240,9 +246,10 @@ async function writeXMLData(appName, fieldsToExport) {
 
   // If cancelled, then just return, don't export
   if (!filePath) return;
+
   //----------------------------------
   // - Get variables ready for export
-  let variables = await readQVFile("VAR");
+  let variables = await readQVFile(exportType);
   let applicationVars = variables.filter(
     variable => variable.application === appName
   );
@@ -254,7 +261,10 @@ async function writeXMLData(appName, fieldsToExport) {
   if (exportFormat === "xml") {
     let appNameSansSpaces = appName.replace(/\s+/g, "").toLowerCase();
     const x2js = new X2JS();
-    let xmlString = x2js.js2xml({ variable: applicationVars });
+    let xmlString =
+      exportType === "VAR"
+        ? x2js.js2xml({ variable: applicationVars })
+        : x2js.js2xml({ group: applicationVars });
     //Enclose xml created with the appName, otherwise Qlik won't recognize properly
     applicationVars = `<${appNameSansSpaces}>${xmlString}</${appNameSansSpaces}>`;
   } else {
@@ -277,6 +287,28 @@ async function writeXMLData(appName, fieldsToExport) {
   }
 }
 
+async function buildVariableExport(exportFormat, appName, fieldsToExport) {
+  //----------------------------------
+  // - Get variables ready for export
+  let variables = await readQVFile("VAR");
+  let applicationVars = variables.filter(
+    variable => variable.application === appName
+  );
+  // Pick only the fields passed to export
+  applicationVars = applicationVars.map(variable =>
+    _.pick(variable, fieldsToExport)
+  );
+
+  if (exportFormat === "xml") {
+    let appNameSansSpaces = appName.replace(/\s+/g, "").toLowerCase();
+    const x2js = new X2JS();
+    let xmlString = x2js.js2xml({ variable: applicationVars });
+    //Enclose xml created with the appName, otherwise Qlik won't recognize properly
+    applicationVars = `<${appNameSansSpaces}>${xmlString}</${appNameSansSpaces}>`;
+  } else {
+    applicationVars = JSON.stringify(applicationVars);
+  }
+}
 export {
   readApplicationNames,
   readQVVariables,

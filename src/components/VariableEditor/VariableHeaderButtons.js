@@ -23,7 +23,8 @@ const VariableHeaderButtons = () => {
       <Button
         icon="export"
         type="primary"
-        onClick={() => history.push(`/${selectedQVW}/variableeditor/export`)}
+        // onClick={() => history.push(`/${selectedQVW}/variableeditor/export`)}
+        onClick={() => history.push(`/${selectedQVW}/export/variable`)}
       >
         Export Variables
       </Button>

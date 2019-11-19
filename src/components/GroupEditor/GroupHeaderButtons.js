@@ -1,5 +1,5 @@
 import React from "react";
-import { useParams, useHistory } from "react-router-dom";
+import { useParams, useHistory, useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
 import { Button } from "antd";
 
@@ -8,6 +8,7 @@ import { Spacer } from "../../styles/standardStyles";
 const Wrapper = styled.div``;
 const GroupHeaderButtons = () => {
   let { selectedQVW } = useParams();
+  let match = useRouteMatch();
   let history = useHistory();
   return (
     <Wrapper>
@@ -22,7 +23,7 @@ const GroupHeaderButtons = () => {
       <Button
         icon="export"
         type="primary"
-        onClick={() => history.push(`/${selectedQVW}/groupeditor/export`)}
+        onClick={() => history.push(`/${selectedQVW}/export/group`)}
       >
         Export Groups
       </Button>

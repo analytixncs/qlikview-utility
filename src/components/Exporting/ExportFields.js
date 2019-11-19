@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 import { Droppable, Draggable } from "react-beautiful-dnd";
 
-import VariableExportField from "./VariableExportField";
+import ExportField from "./ExportField";
 
 const FieldsContainer = styled.div`
   border: 1px solid gray;
@@ -12,17 +12,13 @@ const FieldsContainer = styled.div`
   background-color: #ffecb3;
 `;
 
-const VariableExportFields = ({
-  variableFields,
-  fieldState,
-  setFieldState
-}) => {
+const ExportFields = ({ exportFields, fieldState, setFieldState }) => {
   return (
     <Droppable droppableId="1">
       {provided => (
         <FieldsContainer ref={provided.innerRef} {...provided.droppableProps}>
-          {variableFields.map((field, idx) => (
-            <VariableExportField
+          {exportFields.map((field, idx) => (
+            <ExportField
               key={field}
               index={idx}
               field={field}
@@ -37,7 +33,7 @@ const VariableExportFields = ({
   );
 };
 
-export default VariableExportFields;
+export default ExportFields;
 
 {
   /* <Checkbox

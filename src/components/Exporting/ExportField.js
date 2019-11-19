@@ -11,7 +11,7 @@ const Box = styled.div`
   margin-bottom: 5px;
 `;
 
-const VariableExportField = props => {
+const ExportField = props => {
   let { index, field, fieldState, setFieldState } = props;
   // let { name: field, pos } = fieldObj;
   return (
@@ -39,4 +39,4 @@ const VariableExportField = props => {
   );
 };
 
-export default VariableExportField;
+export default ExportField;

@@ -1,6 +1,5 @@
 import React from "react";
 import { useHistory, useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
 import { Button, Alert, message, Tooltip } from "antd";
 import { DragDropContext } from "react-beautiful-dnd";
 import styled from "styled-components";
@@ -14,7 +13,7 @@ import {
 
 import { writeXMLData } from "../../dataAccess/nativeFileAccess";
 import { getSettings } from "../../dataAccess/applicationDataAccess";
-import VariableExportFields from "../VariableEditor/VariableExportFields";
+import ExportFields from "./ExportFields";
 
 let myStorage = window.localStorage;
 
@@ -76,15 +75,12 @@ const ExportContentButtons = styled.div`
   background-color: #ffecb3;
 `;
 
-const ButtonWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 200px;
-`;
-
-const GroupExport = props => {
+const ExportContainer = props => {
   let history = useHistory();
-  let { selectedQVW } = useParams();
+  // selectedQVW is the QVW we are exporting data for
+  // exportAppType is either 'group' or 'variable' so we know
+  // what we are exporting
+  let { selectedQVW, exportAppType } = useParams();
   let [status, setStatus] = React.useState({
     isError: false,
     isComplete: false,
@@ -94,25 +90,46 @@ const GroupExport = props => {
   // initialize to all boxes being checked
   let [fieldState, setFieldState] = React.useState();
   // These are all fields and order of fields
-  let [variableFields, setVariableFields] = React.useState();
+  let [fields, setFields] = React.useState();
+  console.log("HISTORY groupExport", history, exportAppType);
 
+  // setup constants to use based on exportAppType
+  const EXP_CONSTS = {
+    localStorageFields:
+      exportAppType === "group" ? "groupFields" : "variableFields",
+    localStorageFieldState:
+      exportAppType === "group" ? "groupFieldState" : "variableFieldState",
+    settingsEditor:
+      exportAppType === "group" ? "groupEditor" : "variableEditor",
+    pushURL: `/${selectedQVW}/${
+      exportAppType === "group" ? "groupeditor" : "variableeditor"
+    }`,
+    titleDisplay: `Export ${selectedQVW} ${
+      exportAppType === "group" ? "Groups" : "Variables"
+    }`,
+    navtiveExportType: exportAppType === "group" ? "GROUP" : "VAR"
+  };
   //------------------------------------------------
   React.useEffect(() => {
     const loadFields = async () => {
       //Check if anything in localstorage
-      let varFieldsArray = JSON.parse(myStorage.getItem("variableFields"));
-      let initFieldState = JSON.parse(myStorage.getItem("fieldState"));
+      let fieldsArray = JSON.parse(
+        myStorage.getItem(EXP_CONSTS.localStorageFields)
+      );
+      let initFieldState = JSON.parse(
+        myStorage.getItem(EXP_CONSTS.localStorageFieldState)
+      );
       let settings = await getSettings();
-      if (!varFieldsArray) {
-        varFieldsArray = settings.variableEditor.exportFields;
+      if (!fieldsArray) {
+        fieldsArray = settings[EXP_CONSTS.settingsEditor].exportFields;
       }
       if (!initFieldState) {
         //setup checkbox state object
-        initFieldState = varFieldsArray.reduce((final, curr) => {
+        initFieldState = fieldsArray.reduce((final, curr) => {
           return { ...final, [curr]: true };
         }, {});
       }
-      setVariableFields(varFieldsArray);
+      setFields(fieldsArray);
       setFieldState(initFieldState);
     };
     loadFields();
@@ -123,15 +140,19 @@ const GroupExport = props => {
     setLoading(true);
     setStatus({ isError: false, message: undefined });
     // Get field list to export
-    let fieldsToExport = variableFields
+    let fieldsToExport = fields
       .map(field => (fieldState[field] ? field : null))
       .filter(field => field);
     // console.log("fieldsToExport", fieldsToExport);
     try {
-      let results = await writeXMLData(selectedQVW, fieldsToExport);
+      let results = await writeXMLData(
+        selectedQVW,
+        fieldsToExport,
+        EXP_CONSTS.navtiveExportType
+      );
       setStatus({
         isComplete: results && true,
-        message: `Variables exported to \n ${results}`
+        message: `Groups exported to \n ${results}`
       });
     } catch (error) {
       setStatus({ isError: true, message: error.message });
@@ -152,29 +173,34 @@ const GroupExport = props => {
       return;
     }
 
-    const newVarFields = [...variableFields];
-    newVarFields.splice(source.index, 1);
-    newVarFields.splice(destination.index, 0, draggableId);
-    setVariableFields(newVarFields);
+    const newFields = [...fields];
+    newFields.splice(source.index, 1);
+    newFields.splice(destination.index, 0, draggableId);
+    setFields(newFields);
   };
   //--------------------------------------------------------
   //Save to field position and checked status to Local Storage
   const saveToLocalStorage = () => {
-    myStorage.setItem("variableFields", JSON.stringify(variableFields));
-    myStorage.setItem("fieldState", JSON.stringify(fieldState));
+    myStorage.setItem(EXP_CONSTS.localStorageFields, JSON.stringify(fields));
+    myStorage.setItem(
+      EXP_CONSTS.localStorageFieldState,
+      JSON.stringify(fieldState)
+    );
     message.success("Field Order and checked state saved!", 2);
   };
   const clearLocalStorage = () => {
-    myStorage.clear();
+    myStorage.setItem(EXP_CONSTS.localStorageFields, undefined);
+    myStorage.setItem(EXP_CONSTS.localStorageFieldState, undefined);
     message.error("Field Order and checked state deleted!", 2);
   };
+
   return (
     <GroupExportWrapper>
       <TitleWrapper>
-        <Title>{`Export ${selectedQVW} Groups`} </Title>
+        <Title>{EXP_CONSTS.titleDisplay} </Title>
         <CloseButton
           icon="close"
-          onClick={() => history.push(`/${selectedQVW}/groupeditor`)}
+          onClick={() => history.push(EXP_CONSTS.pushURL)}
         />
       </TitleWrapper>
       <ExportBody>
@@ -182,9 +208,9 @@ const GroupExport = props => {
           <h3>Fields to Export</h3>
           <ExportContent>
             <DragDropContext onDragEnd={onDragEnd}>
-              {variableFields && fieldState && (
-                <VariableExportFields
-                  variableFields={variableFields}
+              {fields && fieldState && (
+                <ExportFields
+                  exportFields={fields}
                   fieldState={fieldState}
                   setFieldState={setFieldState}
                 />
@@ -235,4 +261,4 @@ const GroupExport = props => {
   );
 };
 
-export default GroupExport;
+export default ExportContainer;
