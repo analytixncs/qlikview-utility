@@ -77,8 +77,18 @@ async function updateQVVariable(id, updatedQVVar) {
  * @returns
  */
 async function insertQVVariable(newQVVariable) {
+  let qvVariables;
   // Load variable file
-  let qvVariables = await getQVVariables();
+  try {
+    qvVariables = await getQVVariables();
+  } catch (e) {
+    console.log(e);
+    // if ENOENT we assume file doesn't exist, so we will push empty array
+    // and let writeQVFile create the file
+    if (e.code === "ENOENT") {
+      qvVariables = [];
+    }
+  }
   qvVariables.push(newQVVariable);
   await writeQVFile("VAR", qvVariables);
   return qvVariables;
@@ -156,8 +166,19 @@ async function updateQVGroup(id, updatedQVGroup) {
  * @returns
  */
 async function insertQVGroup(newQVGroup) {
+  let qvGroups;
   // Load Group file
-  let qvGroups = await getQVGroups();
+  try {
+    qvGroups = await getQVGroups();
+  } catch (e) {
+    console.log(e);
+    // if ENOENT we assume file doesn't exist, so we will push empty array
+    // and let writeQVFile create the file
+    if (e.code === "ENOENT") {
+      qvGroups = [];
+    }
+  }
+
   qvGroups.unshift(newQVGroup);
   await writeQVFile("GROUP", qvGroups);
   return qvGroups;

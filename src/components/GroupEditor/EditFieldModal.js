@@ -41,12 +41,17 @@ const EditFieldModal = ({ show, onCloseModal, onAddGroupField }) => {
     //close modal
     onCloseModal();
   };
+  const handleCloseModal = () => {
+    setFieldLabel("");
+    setFieldName("");
+    onCloseModal();
+  };
   return (
     <Modal
       title="Add Group Field"
       visible={show}
       onOk={handleSubmit}
-      onCancel={onCloseModal}
+      onCancel={handleCloseModal}
     >
       <form
         onSubmit={e => {

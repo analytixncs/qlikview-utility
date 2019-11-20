@@ -4,9 +4,13 @@ import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 
-import { editorHeaderHeight, cardBGColor } from "../../styles/standardStyles";
+import {
+  editorHeaderHeight,
+  variableSearchHeight
+} from "../../styles/standardStyles";
 import GroupCard from "./GroupCard";
-import { loadQVWFields } from "../../store/groupEditor";
+import GroupSearch from "./GroupSearch";
+import { loadQVWFields, selectAndFilterGroups } from "../../store/groupEditor";
 
 const Wrapper = styled.div`
   display: flex;
@@ -19,16 +23,18 @@ const GroupWrapper = styled.div`
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
-  margin: 10px;
+  margin-top: calc(${variableSearchHeight} + 10px);
 `;
 
 function GroupMain() {
-  const history = useHistory();
   const { selectedQVW } = useParams();
   const dispatch = useDispatch();
   const groupRecords = useSelector(state =>
-    state.groupEditor.groups.filter(group => group.application === selectedQVW)
+    selectAndFilterGroups(state, selectedQVW)
   );
+  // const groupRecords = useSelector(state =>
+  //   state.groupEditor.groups.filter(group => group.application === selectedQVW)
+  // );
   // Load application fields from JSON file
   useEffect(() => {
     dispatch(loadQVWFields(selectedQVW));
@@ -36,7 +42,7 @@ function GroupMain() {
 
   return (
     <Wrapper>
-      <h1>Group Editor Main</h1>
+      <GroupSearch selectedQVW={selectedQVW} />
       <div>
         <GroupWrapper>
           {groupRecords.map(groupRecord => {

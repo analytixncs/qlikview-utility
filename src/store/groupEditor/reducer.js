@@ -36,6 +36,16 @@ const groupEditorReducer = (state = initialState, action) => {
         ...state,
         qvwFields: undefined
       };
+    case types.GROUPS_SET_SEARCH_TERM:
+      return {
+        ...state,
+        searchTerm: action.payload
+      };
+    case types.GROUPS_SET_TYPE_FILTER:
+      return {
+        ...state,
+        groupTypeFilter: action.payload
+      };
     default:
       return state;
   }

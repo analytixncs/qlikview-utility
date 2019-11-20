@@ -9,25 +9,36 @@ import { Input, Button, Select, message } from "antd";
 import {
   editorHeaderHeight,
   editorBGColor,
-  variableGroupTopMargin
+  Spacer,
+  variableGroupTopMargin,
+  contentBgColor
 } from "../../styles/standardStyles";
 
-const Wrapper = styled.form`
+const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   margin: calc(${editorHeaderHeight} + ${variableGroupTopMargin}) 25px;
   border: 1px solid #abbfcf;
   box-shadow: 3px 3px 9px -2px #000000;
-  background: ${editorBGColor};
+  background: ${contentBgColor};
+  width: 800px;
+`;
+const ButtonRow = styled.div`
+  border-top: 1px solid black;
+  margin: 0 0 0 -15px;
+  padding: 15px;
+  background-color: white;
+  margin: 15px 0 0 0;
 `;
 
 const InputFields = styled.div`
   display: flex;
   flex-direction: column;
+  margin: 0 15px;
 `;
 const Row = styled.div`
   display: flex;
-  margin: 15px 0;
+  margin: 7.5px 0;
 `;
 
 const TitleWrapper = styled.div`
@@ -49,6 +60,20 @@ const CloseButton = styled(Button)`
   &:hover {
     background-color: red;
     color: white;
+  }
+`;
+
+const FormItem = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: ${props => (props.width ? props.width : "100%")};
+  padding-right: 15px;
+  & > textarea {
+    font-family: ${props => (props.isCode ? `"Fira Code", monospace` : null)};
+    font-size: ${props => (props.isCode ? "1.2rem" : null)};
+  }
+  & label {
+    font-weight: bold;
   }
 `;
 
@@ -106,25 +131,42 @@ const GroupEditorAddNew = () => {
       </TitleWrapper>
       <InputFields>
         <Row>
-          <Select value={groupType} onChange={value => setGroupType(value)}>
-            <Select.Option value="Cyclic">Cyclic</Select.Option>
-            <Select.Option value="Drill">Drill</Select.Option>
-          </Select>
-          <Input
-            placeholder="Group Name"
-            value={groupName}
-            onChange={e => setGroupName(e.target.value)}
-          />
+          <FormItem>
+            <label>Group Type</label>
+            <Select value={groupType} onChange={value => setGroupType(value)}>
+              <Select.Option value="Cyclic">Cyclic</Select.Option>
+              <Select.Option value="Drill">Drill</Select.Option>
+            </Select>
+          </FormItem>
+          <FormItem>
+            <label>Group Name</label>
+            <Input
+              placeholder="Group Name"
+              value={groupName}
+              onChange={e => setGroupName(e.target.value)}
+            />
+          </FormItem>
         </Row>
-        <Input.TextArea
-          placeholder="Group Notes"
-          value={groupNotes}
-          onChange={e => setGroupNotes(e.target.value)}
-        />
-        <Button type="primary" onClick={handleSubmit}>
-          Add
-        </Button>
+        <Row>
+          <FormItem>
+            <label>Group Notes</label>
+            <Input.TextArea
+              placeholder="Group Notes"
+              value={groupNotes}
+              onChange={e => setGroupNotes(e.target.value)}
+            />
+          </FormItem>
+        </Row>
       </InputFields>
+      <ButtonRow>
+        <Button type="primary" onClick={handleSubmit}>
+          Add Group
+        </Button>
+        <Spacer />
+        <Button onClick={() => history.push(`/${selectedQVW}/groupeditor`)}>
+          Cancel
+        </Button>
+      </ButtonRow>
     </Wrapper>
   );
 };

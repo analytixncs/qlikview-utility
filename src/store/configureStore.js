@@ -18,7 +18,7 @@ export default function configureStore() {
   const devMiddleware =
     process.env.NODE_ENV !== "production"
       ? [require("redux-immutable-state-invariant").default()]
-      : null;
+      : [];
 
   // If you don't need to use redux dev tools
   //return createStore(rootReducer, applyMiddleware(thunk));

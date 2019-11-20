@@ -28,7 +28,7 @@ function setMainMenu(mainWindow) {
     }
   ];
   // - Push Developer menu on if in Dev Mode
-  if (isDev) {
+  if (isDev || !isDev) {
     template.push({
       label: "Developer",
       submenu: [

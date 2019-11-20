@@ -296,7 +296,7 @@ const MyForm = ({
             disabled={isSubmitting}
             onClick={() => history.push(`/${selectedQVW}/variableeditor`)}
           >
-            Close
+            Cancel
           </Button>
         </ButtonRow>
         <Modal

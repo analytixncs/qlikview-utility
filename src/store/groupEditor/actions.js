@@ -61,6 +61,16 @@ function clearGroups() {
 }
 
 //--------------------------------------------------//
+// -- Group Filtering
+//--------------------------------------------------//
+
+function setGroupSearchTerm(searchTerm) {
+  return { type: types.GROUPS_SET_SEARCH_TERM, payload: searchTerm };
+}
+function setGroupTypeFilter(groupType) {
+  return { type: types.GROUPS_SET_TYPE_FILTER, payload: groupType };
+}
+//--------------------------------------------------//
 // -- QVW Fields Loading/Clearing
 //--------------------------------------------------//
 
@@ -82,6 +92,8 @@ export {
   deleteGroup,
   addGroup,
   clearGroups,
+  setGroupSearchTerm,
+  setGroupTypeFilter,
   loadQVWFields,
   clearQVWFields
 };

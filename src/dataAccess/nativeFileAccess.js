@@ -287,28 +287,6 @@ async function writeXMLData(appName, fieldsToExport, exportType) {
   }
 }
 
-async function buildVariableExport(exportFormat, appName, fieldsToExport) {
-  //----------------------------------
-  // - Get variables ready for export
-  let variables = await readQVFile("VAR");
-  let applicationVars = variables.filter(
-    variable => variable.application === appName
-  );
-  // Pick only the fields passed to export
-  applicationVars = applicationVars.map(variable =>
-    _.pick(variable, fieldsToExport)
-  );
-
-  if (exportFormat === "xml") {
-    let appNameSansSpaces = appName.replace(/\s+/g, "").toLowerCase();
-    const x2js = new X2JS();
-    let xmlString = x2js.js2xml({ variable: applicationVars });
-    //Enclose xml created with the appName, otherwise Qlik won't recognize properly
-    applicationVars = `<${appNameSansSpaces}>${xmlString}</${appNameSansSpaces}>`;
-  } else {
-    applicationVars = JSON.stringify(applicationVars);
-  }
-}
 export {
   readApplicationNames,
   readQVVariables,
