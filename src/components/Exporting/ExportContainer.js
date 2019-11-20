@@ -75,7 +75,7 @@ const ExportContentButtons = styled.div`
   background-color: #ffecb3;
 `;
 
-const ExportContainer = props => {
+const ExportContainer = () => {
   let history = useHistory();
   // selectedQVW is the QVW we are exporting data for
   // exportAppType is either 'group' or 'variable' so we know
@@ -91,9 +91,10 @@ const ExportContainer = props => {
   let [fieldState, setFieldState] = React.useState();
   // These are all fields and order of fields
   let [fields, setFields] = React.useState();
+
   console.log("HISTORY groupExport", history, exportAppType);
 
-  // setup constants to use based on exportAppType
+  // constants based on exportAppType
   const EXP_CONSTS = {
     localStorageFields:
       exportAppType === "group" ? "groupFields" : "variableFields",
@@ -109,6 +110,7 @@ const ExportContainer = props => {
     }`,
     navtiveExportType: exportAppType === "group" ? "GROUP" : "VAR"
   };
+
   //------------------------------------------------
   React.useEffect(() => {
     const loadFields = async () => {

@@ -23,7 +23,11 @@ const Wrapper = styled.form`
 
 const InputFields = styled.div`
   display: flex;
-  /* flex-direction: column; */
+  flex-direction: column;
+`;
+const Row = styled.div`
+  display: flex;
+  margin: 15px 0;
 `;
 
 const TitleWrapper = styled.div`
@@ -84,7 +88,9 @@ const GroupEditorAddNew = () => {
       groupType: groupType,
       groupNotes: groupNotes,
       createUser: "admin",
-      createDate: secondsTimeStampNow()
+      createDate: secondsTimeStampNow(),
+      modifyUser: "",
+      modifyDate: ""
     };
     dispatch(addGroup(newGroup));
     history.goBack();
@@ -99,15 +105,17 @@ const GroupEditorAddNew = () => {
         />
       </TitleWrapper>
       <InputFields>
-        <Input
-          placeholder="Group Name"
-          value={groupName}
-          onChange={e => setGroupName(e.target.value)}
-        />
-        <Select value={groupType} onChange={value => setGroupType(value)}>
-          <Select.Option value="Cyclic">Cyclic</Select.Option>
-          <Select.Option value="Drill">Drill</Select.Option>
-        </Select>
+        <Row>
+          <Select value={groupType} onChange={value => setGroupType(value)}>
+            <Select.Option value="Cyclic">Cyclic</Select.Option>
+            <Select.Option value="Drill">Drill</Select.Option>
+          </Select>
+          <Input
+            placeholder="Group Name"
+            value={groupName}
+            onChange={e => setGroupName(e.target.value)}
+          />
+        </Row>
         <Input.TextArea
           placeholder="Group Notes"
           value={groupNotes}
