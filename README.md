@@ -1,6 +1,6 @@
 # Qlik Variable and Group Manager
 
-![Qlik Variable Group Manager Logo](.\Logo.png)
+![Qlik Variable Group Manager Logo](Logo.png)
 
 ## Description
 
