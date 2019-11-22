@@ -45,8 +45,8 @@ function createWindow(loadingScreen) {
       if (loadingScreen) {
         loadingScreen.close();
       }
+      isDev && mainWindow.openDevTools();
     }, 1000);
-    isDev && mainWindow.openDevTools();
   });
 }
 
@@ -64,6 +64,7 @@ const createLoadingScreen = () => {
       nodeIntegration: true // needed if going to access file system
     },
     alwaysOnTop: true,
+    show: false,
     backgroundColor: "#ffffff"
   });
   loadingScreen.setResizable(false);
@@ -77,10 +78,12 @@ const createLoadingScreen = () => {
   // console.log("ready to show");
   // loadingScreen.show();
 
-  loadingScreen.once("ready-to-show", () => {
+  // loadingScreen.once("ready-to-show", () => {
+  //   loadingScreen.show();
+  // });
+  loadingScreen.webContents.on("did-finish-load", () => {
     loadingScreen.show();
   });
-  // loadingScreen.webContents.on("did-finish-load", () => {});
 };
 //---------------------------------------
 // - APP STARTUP
