@@ -13,8 +13,8 @@ const isDev = require("electron-is-dev");
 const { setMainMenu } = require("./menu");
 
 let mainWindow;
-
-function createWindow() {
+let loadingScreen;
+function createWindow(loadingScreen) {
   mainWindow = new BrowserWindow({
     width: 900,
     height: 680,
@@ -41,11 +41,56 @@ function createWindow() {
   }
   mainWindow.once("ready-to-show", () => {
     mainWindow.show();
+    setTimeout(() => {
+      if (loadingScreen) {
+        loadingScreen.close();
+      }
+    }, 1000);
     isDev && mainWindow.openDevTools();
   });
 }
 
-app.on("ready", createWindow);
+const createLoadingScreen = () => {
+  /// create a browser window
+  loadingScreen = new BrowserWindow({
+    /// define width and height for the window
+    width: 600,
+    height: 400,
+    /// remove the window frame, so it will become a frameless window
+    frame: false,
+    /// and set the transparency, to remove any window background color
+    transparent: true,
+    webPreferences: {
+      nodeIntegration: true // needed if going to access file system
+    },
+    alwaysOnTop: true,
+    backgroundColor: "#ffffff"
+  });
+  loadingScreen.setResizable(false);
+  loadingScreen.loadURL(
+    isDev
+      ? "http://localhost:3000/loading.html"
+      : `file://${path.join(__dirname, "../build/loading.html")}`
+  );
+
+  loadingScreen.on("closed", () => (loadingScreen = null));
+  // console.log("ready to show");
+  // loadingScreen.show();
+
+  loadingScreen.once("ready-to-show", () => {
+    loadingScreen.show();
+  });
+  // loadingScreen.webContents.on("did-finish-load", () => {});
+};
+//---------------------------------------
+// - APP STARTUP
+//---------------------------------------
+// app.on("ready", createWindow);
+app.on("ready", () => {
+  console.log("app ready");
+  createLoadingScreen();
+  createWindow(loadingScreen);
+});
 
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
