@@ -90,7 +90,6 @@ const createLoadingScreen = () => {
 //---------------------------------------
 // app.on("ready", createWindow);
 app.on("ready", () => {
-  console.log("app ready");
   createLoadingScreen();
   createWindow(loadingScreen);
 });

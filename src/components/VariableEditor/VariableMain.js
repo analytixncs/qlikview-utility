@@ -12,7 +12,6 @@ import {
 } from "../../styles/standardStyles";
 
 import { selectQVWVariablesGrouped } from "../../store/variableEditor";
-import { setGroupFilter } from "../../store/variableEditor";
 
 import GroupHeader from "./GroupHeader";
 import GroupVariables from "./GroupVariables";

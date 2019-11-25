@@ -283,7 +283,7 @@ async function getQVWFields(qvwName = undefined) {
  */
 async function getSettings() {
   let settings = await readQVFile("SETTINGS");
-  console.log("Full Settings file contents", settings);
+  // console.log("Full Settings file contents", settings);
   return settings;
 }
 //=========================================================================

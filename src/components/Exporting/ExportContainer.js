@@ -92,8 +92,6 @@ const ExportContainer = () => {
   // These are all fields and order of fields
   let [fields, setFields] = React.useState();
 
-  console.log("HISTORY groupExport", history, exportAppType);
-
   // constants based on exportAppType
   const EXP_CONSTS = {
     localStorageFields:
