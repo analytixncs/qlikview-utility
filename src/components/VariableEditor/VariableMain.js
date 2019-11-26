@@ -49,6 +49,11 @@ function VariableMain(props) {
   let groupedVars = useSelector(state =>
     selectQVWVariablesGrouped(state, selectedQVW)
   );
+  let searchState = useSelector(
+    state =>
+      `searchTerm: ${state.variableEditor.searchTerm} groupFilter: ${state.variableEditor.groupFilter}`
+  );
+  console.log("VariableMain-searchState", searchState);
   return (
     <div>
       <VariableSearch selectedQVW={selectedQVW} />

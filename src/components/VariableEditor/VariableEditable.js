@@ -3,9 +3,12 @@ import PropTypes from "prop-types";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import styled, { keyframes } from "styled-components";
-import { Button, Input, Select, Checkbox } from "antd";
+import { Button, Input, Select, Checkbox, Modal } from "antd";
 
-import { useVariableStateSetters } from "../context/variableStateContext";
+import {
+  useVariableStateSetters,
+  useVariableState
+} from "../context/variableStateContext";
 import { updateVariable, selectQVWGroups } from "../../store/variableEditor";
 
 const Field = styled.div`
@@ -69,6 +72,7 @@ function VariableEditable({ variable }) {
   } = variable;
 
   let { setViewingId, setIsEditing, setIsDirty } = useVariableStateSetters();
+  let { isDirty } = useVariableState();
   let { selectedQVW } = useParams();
   let dispatch = useDispatch();
   let groupsList = useSelector(state => selectQVWGroups(state, selectedQVW));
@@ -92,12 +96,28 @@ function VariableEditable({ variable }) {
   }, [newGroup, newName, newDescription, newExpression, newNotes, newLocked]);
 
   // set dirty flag to false when exiting component
+  // This effectively sets the dirty flag whenever the isEditable flag is set to false
+  // as setting isEditable to false will unmount this component
   useEffect(() => {
     return () => {
       setIsDirty(false);
     };
   }, [setIsDirty]);
 
+  const onCancelEdit = () => {
+    if (isDirty) {
+      Modal.confirm({
+        cancelText: "Lose Changes?",
+        okText: "Continue Editing?",
+        title: "Lose Changes?",
+        content: "You have made changes, do you mind losing them?",
+        onCancel: () => setIsEditing(false)
+      });
+      //showModal();
+    } else {
+      setIsEditing(false);
+    }
+  };
   const onSaveRecord = () => {
     let newVarRecord = {
       id,
@@ -165,7 +185,7 @@ function VariableEditable({ variable }) {
           Save
         </Button>
         <Spacer />
-        <Button type="primary" onClick={() => setIsEditing(false)}>
+        <Button type="primary" onClick={onCancelEdit}>
           Cancel
         </Button>
       </ButtonGroupWrapper>
