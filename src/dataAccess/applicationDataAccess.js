@@ -286,6 +286,11 @@ async function getSettings() {
   // console.log("Full Settings file contents", settings);
   return settings;
 }
+
+async function saveSettings(updatedSettings) {
+  console.log("updateSettings", updatedSettings);
+  return writeQVFile("SETTINGS", updatedSettings);
+}
 //=========================================================================
 //= EXPORT FUNCTIONS
 //=========================================================================
@@ -302,5 +307,6 @@ export {
   saveQVWName,
   deleteQVWName,
   getQVWFields,
-  getSettings
+  getSettings,
+  saveSettings
 };
