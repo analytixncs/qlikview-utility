@@ -1,0 +1,17 @@
+{
+  "name": "exceltojson",
+  "version": "1.0.0",
+  "description": "",
+  "main": "FieldsToJSON.js",
+  "dependencies": {
+    "convert-excel-to-json": "^1.6.1",
+    "yargs": "^15.0.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "convert": "convert-excel-to-json --sourceFile=\"SFFields.xlsx\""
+  },
+  "author": "",
+  "license": "ISC"
+}

@@ -13,6 +13,7 @@ import {
 
 import { writeXMLData } from "../../dataAccess/nativeFileAccess";
 import { getSettings } from "../../dataAccess/applicationDataAccess";
+import { useAppSettingsState } from "../../context/appSettingsContext";
 import ExportFields from "./ExportFields";
 
 let myStorage = window.localStorage;
@@ -80,6 +81,7 @@ const ExportContainer = () => {
   // selectedQVW is the QVW we are exporting data for
   // exportAppType is either 'group' or 'variable' so we know
   // what we are exporting
+  let { appSettings } = useAppSettingsState();
   let { selectedQVW, exportAppType } = useParams();
   let [status, setStatus] = React.useState({
     isError: false,
@@ -93,47 +95,48 @@ const ExportContainer = () => {
   let [fields, setFields] = React.useState();
 
   // constants based on exportAppType
-  const EXP_CONSTS = {
-    localStorageFields:
-      exportAppType === "group" ? "groupFields" : "variableFields",
-    localStorageFieldState:
-      exportAppType === "group" ? "groupFieldState" : "variableFieldState",
-    settingsEditor:
-      exportAppType === "group" ? "groupEditor" : "variableEditor",
-    pushURL: `/${selectedQVW}/${
-      exportAppType === "group" ? "groupeditor" : "variableeditor"
-    }`,
-    titleDisplay: `Export ${selectedQVW} ${
-      exportAppType === "group" ? "Groups" : "Variables"
-    }`,
-    navtiveExportType: exportAppType === "group" ? "GROUP" : "VAR"
-  };
+  // Need to memoize since it is being used in useEffect
+  const EXP_CONSTS = React.useMemo(
+    () => ({
+      localStorageFields:
+        exportAppType === "group" ? "groupFields" : "variableFields",
+      localStorageFieldState:
+        exportAppType === "group" ? "groupFieldState" : "variableFieldState",
+      settingsEditor:
+        exportAppType === "group" ? "groupEditor" : "variableEditor",
+      pushURL: `/${selectedQVW}/${
+        exportAppType === "group" ? "groupeditor" : "variableeditor"
+      }`,
+      titleDisplay: `Export ${selectedQVW} ${
+        exportAppType === "group" ? "Groups" : "Variables"
+      }`,
+      navtiveExportType: exportAppType === "group" ? "GROUP" : "VAR"
+    }),
+    [selectedQVW, exportAppType]
+  );
 
   //------------------------------------------------
   React.useEffect(() => {
-    const loadFields = async () => {
-      //Check if anything in localstorage
-      let fieldsArray = JSON.parse(
-        myStorage.getItem(EXP_CONSTS.localStorageFields)
-      );
-      let initFieldState = JSON.parse(
-        myStorage.getItem(EXP_CONSTS.localStorageFieldState)
-      );
-      let settings = await getSettings();
-      if (!fieldsArray) {
-        fieldsArray = settings[EXP_CONSTS.settingsEditor].exportFields;
-      }
-      if (!initFieldState) {
-        //setup checkbox state object
-        initFieldState = fieldsArray.reduce((final, curr) => {
-          return { ...final, [curr]: true };
-        }, {});
-      }
-      setFields(fieldsArray);
-      setFieldState(initFieldState);
-    };
-    loadFields();
-  }, []);
+    //Check if anything in localstorage
+    let fieldsArray = JSON.parse(
+      myStorage.getItem(EXP_CONSTS.localStorageFields)
+    );
+    let initFieldState = JSON.parse(
+      myStorage.getItem(EXP_CONSTS.localStorageFieldState)
+    );
+    // let settings = await getSettings();
+    if (!fieldsArray) {
+      fieldsArray = appSettings[EXP_CONSTS.settingsEditor].exportFields;
+    }
+    if (!initFieldState) {
+      //setup checkbox state object
+      initFieldState = fieldsArray.reduce((final, curr) => {
+        return { ...final, [curr]: true };
+      }, {});
+    }
+    setFields(fieldsArray);
+    setFieldState(initFieldState);
+  }, [EXP_CONSTS, appSettings]);
   //--------------------
   //Export function
   const exportXML = async () => {
@@ -189,8 +192,8 @@ const ExportContainer = () => {
     message.success("Field Order and checked state saved!", 2);
   };
   const clearLocalStorage = () => {
-    myStorage.setItem(EXP_CONSTS.localStorageFields, undefined);
-    myStorage.setItem(EXP_CONSTS.localStorageFieldState, undefined);
+    myStorage.removeItem(EXP_CONSTS.localStorageFields);
+    myStorage.removeItem(EXP_CONSTS.localStorageFieldState);
     message.error("Field Order and checked state deleted!", 2);
   };
 

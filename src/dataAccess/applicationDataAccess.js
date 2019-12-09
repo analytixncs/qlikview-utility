@@ -89,6 +89,9 @@ async function insertQVVariable(newQVVariable) {
       qvVariables = [];
     }
   }
+  if (!Array.isArray(qvVariables)) {
+    qvVariables = [];
+  }
   qvVariables.push(newQVVariable);
   await writeQVFile("VAR", qvVariables);
   return qvVariables;
@@ -178,7 +181,9 @@ async function insertQVGroup(newQVGroup) {
       qvGroups = [];
     }
   }
-
+  if (!Array.isArray(qvGroups)) {
+    qvGroups = [];
+  }
   qvGroups.unshift(newQVGroup);
   await writeQVFile("GROUP", qvGroups);
   return qvGroups;
@@ -275,7 +280,14 @@ async function getQVWFields(qvwName = undefined) {
 //--------------------------------------
 //- SETTINGS
 //--------------------------------------
-
+const appSettingUpdateFuncs = {
+  defaultApplication: (settings, defaultApplication) => ({
+    ...settings,
+    system: {
+      defaultApplication
+    }
+  })
+};
 /**
  * Returns the contents of the /data/settings.json file.
  *
@@ -287,9 +299,26 @@ async function getSettings() {
   return settings;
 }
 
-async function saveSettings(updatedSettings) {
-  console.log("updateSettings", updatedSettings);
-  return writeQVFile("SETTINGS", updatedSettings);
+async function saveSettings(currentAppSettings, appSettingsObject) {
+  // Settings update Object
+  // { defaultApplication: 'groupeditor' }
+  // Extract the keys, the run the functions associated with those keys
+  // in our update functions object
+  // { defaultApplication: (newSettings) => { merge with all settings }}
+  // Extract keys from appSettingsObject
+  let keysToUpdate = Object.keys(appSettingsObject);
+  let newAppSettings = currentAppSettings;
+  keysToUpdate.forEach(key => {
+    //console.log(`Key to update ${key} with value ${appSettingsObject[key]}`);
+    newAppSettings = appSettingUpdateFuncs[key](
+      newAppSettings,
+      appSettingsObject[key]
+    );
+    //console.log("newAppSettings", newAppSettings);
+  });
+  console.log("newAppSettings", newAppSettings);
+  let result = await writeQVFile("SETTINGS", newAppSettings);
+  return newAppSettings;
 }
 //=========================================================================
 //= EXPORT FUNCTIONS

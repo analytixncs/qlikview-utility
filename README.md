@@ -16,6 +16,10 @@ QVGM (Qlik Variable and Group Manager) stores the data in JSON files and support
 
 - **electron-dev** - runs the app in dev mode
 
+## Tooling
+
+The application is build with React and uses Redux for global storage.
+
 ## Data Storage
 
 All data is stored in JSON files in the `data` directory of the application.
@@ -23,9 +27,11 @@ All data is stored in JSON files in the `data` directory of the application.
 - **qvwnames.json** - stores the applications (qvw files) that will be managed.
 - **qvVariables.json** - variables for all the managed applications
 - **qvGroups.json** - groups for all the managed applications 
-- **qvwFields.json** - stores the fields for use in the Group manager.
+- **qvwFields.json** - stores the fields for use in the Group manager. (There is a helper node function in the utils directory of the project **FieldsToJSON.js** and a Excel template **FieldsTemplate.xlsx** that you can use to create the needed JSON file.)
 
-## Tooling
+## Basic Usage
 
-The application is build with React and uses Redux for global storage.
+
+
+
 

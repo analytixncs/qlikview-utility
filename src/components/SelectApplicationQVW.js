@@ -5,6 +5,7 @@ import { createSelector } from "reselect";
 import { Tooltip, Button, Modal, Input } from "antd";
 import styled from "styled-components";
 import { addQVWName, removeQVWName } from "../store/QVWs";
+import { useAppSettingsState } from "../context/appSettingsContext";
 
 const Wrapper = styled.div`
   display: flex;
@@ -62,7 +63,11 @@ const QVWSelection = createSelector(
 function SelectApplicationQVW() {
   let [modalVisible, setModalVisible] = React.useState(false);
   let [newQVWName, setNewQVWName] = React.useState("");
-  const defaultStartApp = "variableeditor"; // Could at some point be a setting so it can be changed
+  let { appSettings } = useAppSettingsState();
+  // pulls default app from settings.json
+  const defaultStartApp = appSettings
+    ? appSettings.system.defaultApplication
+    : null;
   const dispatch = useDispatch();
   const QVWs = useSelector(QVWSelection);
 

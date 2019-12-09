@@ -5,6 +5,7 @@ import "antd/dist/antd.css";
 
 import Main from "./components/Main";
 import Settings from "./components/Settings";
+import AppSettingsProvider from "./context/appSettingsContext";
 import configureStore from "./store/configureStore";
 import * as qvwActions from "./store/QVWs";
 import * as varActions from "./store/variableEditor";
@@ -20,13 +21,15 @@ function App() {
   store.dispatch(groupActions.loadGroups());
   return (
     <Provider store={store}>
-      <Router>
-        <Switch>
-          <Route path="/settings" component={Settings} />
-          <Route path="/" component={Main} />
-        </Switch>
-        <GlobalStyles />
-      </Router>
+      <AppSettingsProvider>
+        <Router>
+          <Switch>
+            <Route path="/settings" component={Settings} />
+            <Route path="/" component={Main} />
+          </Switch>
+          <GlobalStyles />
+        </Router>
+      </AppSettingsProvider>
     </Provider>
   );
 }

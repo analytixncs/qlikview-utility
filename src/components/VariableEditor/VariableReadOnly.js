@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { useDispatch } from "react-redux";
 import { Button } from "antd";
-import { useVariableStateSetters } from "../context/variableStateContext";
+import { useVariableStateSetters } from "../../context/variableStateContext";
 import { deleteVariable } from "../../store/variableEditor";
 
 const Wrapper = styled.div`

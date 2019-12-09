@@ -8,7 +8,7 @@ import { Button, Input, Select, Checkbox, Modal } from "antd";
 import {
   useVariableStateSetters,
   useVariableState
-} from "../context/variableStateContext";
+} from "../../context/variableStateContext";
 import { updateVariable, selectQVWGroups } from "../../store/variableEditor";
 
 const Field = styled.div`

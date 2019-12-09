@@ -6,7 +6,7 @@ import { Icon, Tooltip } from "antd";
 import {
   useVariableStateSetters,
   useVariableState
-} from "../context/variableStateContext";
+} from "../../context/variableStateContext";
 
 const Wrapper = styled.div`
   border: 1px solid black;

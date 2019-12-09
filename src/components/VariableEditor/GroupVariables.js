@@ -4,7 +4,7 @@ import styled from "styled-components";
 import {
   useVariableState,
   useVariableStateSetters
-} from "../context/variableStateContext";
+} from "../../context/variableStateContext";
 import VariableItem from "./VariableItem";
 import VariableEditable from "./VariableEditable";
 import VariableReadOnly from "./VariableReadOnly";

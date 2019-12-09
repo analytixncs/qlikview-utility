@@ -9,6 +9,7 @@
     "electron-dev": "concurrently  \"yarn start\" \"wait-on http://localhost:3000 && electron .",
     "electron-pack": "build --em.main=build/electron.js",
     "pack": "electron-builder --dir",
+    "dist": "electron-builder",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "jsdoc": "jsdoc -c jsdoc.conf.json",

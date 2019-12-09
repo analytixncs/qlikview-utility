@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { Route, Switch } from "react-router-dom";
 
-import VariableStateProvider from "./context/variableStateContext";
+import VariableStateProvider from "../context/variableStateContext";
 import EditorHeader from "./EditorHeader";
 import VariableMain from "./VariableEditor/VariableMain";
 import VariableAddNew from "./VariableEditor/VariableAddNewFormik";
