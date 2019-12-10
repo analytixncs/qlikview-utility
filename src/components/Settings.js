@@ -3,14 +3,10 @@ import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { Button, Radio } from "antd";
 
-import {
-  editorBGColor,
-  Spacer,
-  contentBgColor
-} from "../styles/standardStyles";
+import { Spacer, contentBgColor } from "../styles/standardStyles";
 import {
   useAppSettingsState,
-  useAppSettingsStateSetting
+  useSetAppSettingsState
 } from "../context/appSettingsContext";
 
 const Wrapper = styled.div`
@@ -53,10 +49,7 @@ function Settings(props) {
   let [defaultApp, setDefaultApp] = React.useState("");
   //let [settings, setSettings] = React.useState("");
   let { appSettings } = useAppSettingsState();
-  let { saveAppSettings } = useAppSettingsStateSetting();
-
-  console.log("defaultApp", defaultApp);
-  console.log("settings", appSettings);
+  let { saveAppSettings } = useSetAppSettingsState();
 
   // Run on initial load of component to
   // set the default state of appSettings parts

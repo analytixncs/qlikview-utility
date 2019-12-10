@@ -184,9 +184,17 @@ async function insertQVGroup(newQVGroup) {
   if (!Array.isArray(qvGroups)) {
     qvGroups = [];
   }
-  qvGroups.unshift(newQVGroup);
-  await writeQVFile("GROUP", qvGroups);
-  return qvGroups;
+  let selectedQVW = newQVGroup.application;
+  console.log("INSERT QV GROUP Selected QVW", selectedQVW);
+  let groupsInQVW = qvGroups.filter(group => group.application === selectedQVW);
+  groupsInQVW.unshift(newQVGroup);
+  let newQVGroups = [
+    ...groupsInQVW,
+    ...qvGroups.filter(group => group.application !== selectedQVW)
+  ];
+  console.log(newQVGroups);
+  await writeQVFile("GROUP", newQVGroups);
+  return newQVGroups;
 }
 
 /**

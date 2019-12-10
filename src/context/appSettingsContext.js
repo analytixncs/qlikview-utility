@@ -60,11 +60,11 @@ export const useAppSettingsState = () => {
 /**======================================================
  * App Settings State Setters
  *
- * useAppSettingsStateSetting()
+ * useSetAppSettingsState()
  *  Return an object with the setter functions
  *   { appSettings }
  */
-export const useAppSettingsStateSetting = () => {
+export const useSetAppSettingsState = () => {
   const context = useContext(AppSettingsSettersContext);
   if (context === undefined) {
     throw new Error(
