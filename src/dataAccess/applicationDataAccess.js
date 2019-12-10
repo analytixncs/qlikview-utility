@@ -251,7 +251,21 @@ async function deleteQVWName(qvwId) {
   await writeQVFile("VAR", variables);
 
   //TODO Backup groups for given QVW
-
+  let groups = await readQVFile("GROUP");
+  //Extract QVWName from QVWNames file
+  backupName = `${QVWName}-DeleteBackupOfGroups-${dateTimeFileFormatted(
+    new Date()
+  )}.json`;
+  // Backup variables for given QVW
+  let backupGroupData = groups.filter(group => group.application === QVWName);
+  try {
+    await backupData(backupName, JSON.stringify(backupGroupData));
+  } catch (err) {
+    throw err;
+  }
+  // Delete variables for given QVW
+  groups = groups.filter(group => group.application !== QVWName);
+  await writeQVFile("GROUP", groups);
   // Remove QVW From qvwnames.json
   QVWNames = QVWNames.filter(qvw => qvw.id !== qvwId);
   await writeQVFile("QVWNAMES", QVWNames);
