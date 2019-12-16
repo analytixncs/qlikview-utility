@@ -12,7 +12,7 @@ import {
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  margin: 25px;
+  margin: 25px auto;
   border: 1px solid #abbfcf;
   box-shadow: 3px 3px 9px -2px #000000;
   background: ${contentBgColor};
@@ -25,21 +25,30 @@ const TitleWrapper = styled.div`
   background-color: white;
   padding: 0 0 0 10px;
 `;
+
+const SettingsList = styled.div`
+  & > :last-child {
+    border-bottom: none;
+  }
+`;
+const SettingCard = styled.div`
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid black;
+  padding: 5px;
+  & > :last-child {
+    border: 2px solid red;
+    background-color: white;
+  }
+`;
+
 const CloseButton = styled(Button)`
   border: 0;
   border-radius: 0;
-  &:hover {
-    background-color: red;
-    color: white;
-  }
 `;
 const Title = styled.div`
   font-size: 1.2rem;
   font-weight: bold;
-`;
-const SettingCard = styled.div`
-  border: 1px solid black;
-  padding: 5px;
 `;
 
 //-------------------------
@@ -55,26 +64,22 @@ function Settings(props) {
   // set the default state of appSettings parts
   React.useEffect(() => {
     setDefaultApp(appSettings.system.defaultApplication);
-  }, []);
+  }, [appSettings]);
 
-  // // Merge settings into full settings object and then save back to disk
-  // const mergeSaveSettings = (key, newValues) => {
-  //   let newSettings = { ...appSettings, [key]: newValues };
-  //   console.log(
-  //     `New appSettings data for "${key}" key: ${JSON.stringify(appSettings)}`
-  //   );
-  //   saveSettings(newSettings);
-  //   //setSettings(newSettings);
-  // };
+  // Until the defaultApp state is set return null
+  // This is to keep flickering from happening when setting up the settingCards
+  if (defaultApp === "") {
+    return null;
+  }
   return (
     <Wrapper>
       <TitleWrapper>
         <Title>App Settings </Title>
         <CloseButton icon="close" onClick={() => history.push("/")} />
       </TitleWrapper>
-      <SettingCard>
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          <h5>Default Application</h5>
+      <SettingsList>
+        <SettingCard>
+          <h4>Default Application</h4>
           <Radio.Group
             name="defaultappgroup"
             onChange={e => setDefaultApp(e.target.value)}
@@ -86,21 +91,25 @@ function Settings(props) {
           <Spacer />
           <Button
             style={{ width: "150px" }}
-            type="primary"
+            type={
+              appSettings.system.defaultApplication !== defaultApp
+                ? "danger"
+                : "primary"
+            }
             onClick={() => saveAppSettings({ defaultApplication: defaultApp })}
           >
             Update
           </Button>
-        </div>
-      </SettingCard>
+        </SettingCard>
+        <Spacer />
+        <SettingCard>
+          <h4>Setting Number 2</h4>
+        </SettingCard>
+      </SettingsList>
       <Spacer />
-      <SettingCard>
-        <h4>Setting Number 2</h4>
-      </SettingCard>
-      {/* 
       <Button type="primary" onClick={() => history.push("/")}>
-        Home
-      </Button> */}
+        Close
+      </Button>
     </Wrapper>
   );
 }
