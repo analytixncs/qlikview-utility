@@ -68,7 +68,7 @@
   },
   "dependencies": {
     "electron-is-dev": "^1.1.0",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "react-hotkeys-hook": "^1.5.3",
     "electron-devtools-installer": "^2.2.4",
     "x2js": "^3.3.1",
