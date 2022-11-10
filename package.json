@@ -47,7 +47,7 @@
   "devDependencies": {
     "concurrently": "^4.1.1",
     "docdash": "^1.1.1",
-    "electron": "^6.0.0",
+    "electron": "^18.3.7",
     "electron-builder": "^21.2.0",
     "formik": "^1.5.8",
     "jsdoc": "^3.6.3",
